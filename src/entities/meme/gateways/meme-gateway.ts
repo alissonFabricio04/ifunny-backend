@@ -6,5 +6,6 @@ export interface MemeGateway {
   publish: (meme: Meme) => Promise<void>
   addComment: (memeId: Id, comment: Comment) => Promise<void>
   find: (memeId: Id) => Promise<Meme | null>
-  feed: (pagination: number = 1) => Promise<Array<Meme>>
+  memesInLast1h: (qty: number) => Promise<Meme[]>
+  lastLikes: (userId: Id, qty: number) => Promise<Meme[]>
 }
