@@ -1,11 +1,11 @@
-import { Id } from "../../id/model/id-value-object"
-import { CommentWithoutContentError } from "../errors/comment-without-content-error"
-import { IdWasNotProvidedError } from "../errors/id-was-not-provided-error"
+import { Id } from '../../id/model/id-value-object'
+import { CommentWithoutContentError } from '../errors/comment-without-content-error'
+import { IdWasNotProvidedError } from '../errors/id-was-not-provided-error'
 
-type Content = {
+export type Content = {
   midia?: {
     postId: Id
-  } 
+  }
   text?: string
 }
 
@@ -14,7 +14,7 @@ export class Comment {
     private _id: Id,
     private _memeId: Id,
     private _authorId: Id,
-    private _content: Content
+    private _content: Content,
   ) {
     this.id = _id
     this.memeId = _memeId
@@ -63,7 +63,7 @@ export class Comment {
   }
 
   private set content(content: Content) {
-    if(!content.midia && !content.text) {
+    if (!content.midia && !content.text) {
       throw new CommentWithoutContentError()
     }
 

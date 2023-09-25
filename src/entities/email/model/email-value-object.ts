@@ -1,4 +1,7 @@
-import { BadFormattedEmailError } from "../errors/email-with-format-invalid-error";
+/* eslint-disable no-unused-expressions */
+/* eslint-disable no-useless-escape */
+
+import { BadFormattedEmailError } from '../errors/email-with-format-invalid-error'
 
 export class Email {
   constructor(private _email: string) {

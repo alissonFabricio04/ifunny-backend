@@ -1,10 +1,14 @@
+export interface InDTO<I> {
+  data: I
+}
+
+export interface OutDTO<O> {
+  status: 'SUCCESS' | 'ERROR'
+  data: O
+}
+
 export interface UseCase<G, I, O> {
   readonly gateway: G
 
-  handle: (input: DTO<I>) => Promise<DTO<O>>
-}
-
-export interface DTO<D> {
-  status: 'SUCCESS' | 'ERROR'
-  data: D
+  handle: (input: InDTO<I>) => Promise<OutDTO<O>>
 }

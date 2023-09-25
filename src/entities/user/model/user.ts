@@ -1,3 +1,5 @@
+/* eslint-disable no-useless-escape */
+
 import { Email } from '../../email/model/email-value-object'
 import { Id } from '../../id/model/id-value-object'
 import { AccountIsAlreadyActiveError } from '../errors/account-is-already-active-error'
@@ -9,6 +11,7 @@ import { PasswordHasNoNumbersError } from '../errors/password-has-no-numbers-err
 import { PasswordHasNoSpecialCharactersError } from '../errors/password-has-no-special-characters-error'
 import { PasswordNotHaveCapitalLetterError } from '../errors/password-not-have-capital-letter-error'
 import { PasswordNotHaveLowercaseLetterError } from '../errors/password-not-have-lowercase-letter-error'
+import { PasswordTooLongError } from '../errors/password-too-long-error'
 import { PasswordTooShortError } from '../errors/password-too-short-error'
 import { UsernameHasSpecialCharactersError } from '../errors/username-has-special-characters-error'
 import { UsernameTooLongError } from '../errors/username-too-long-error'
@@ -28,7 +31,7 @@ export class User {
     this.id = _id
     this.username = _username
     this.email = _email
-    this.isActive = isActive ? isActive : false
+    this.isActive = isActive || false
 
     if (_password) {
       this.password = _password
@@ -60,11 +63,11 @@ export class User {
       throw new UsernameTooShortError()
     }
 
-    if (username.length > 20) {
+    if (username.length > 40) {
       throw new UsernameTooLongError()
     }
 
-    const specialCharsPattern = new RegExp(/[!@#$%^&*()#+{}\[\]:;''<>,.?~`|\\\/\-]/)
+    const specialCharsPattern = /[!@#$%^&*()#+{}\[\]:;''<>,.?~`|\\\/\-]/
 
     if (specialCharsPattern.test(username)) {
       throw new UsernameHasSpecialCharactersError()
@@ -106,6 +109,10 @@ export class User {
 
       if (password.length < 8) {
         throw new PasswordTooShortError()
+      }
+
+      if (password.length > 48) {
+        throw new PasswordTooLongError()
       }
 
       if (!regexUpperCase.test(password)) {

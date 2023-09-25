@@ -1,4 +1,4 @@
-export class TagContainsSpacesError extends Error {
+export class TagContainsWhiteSpacesError extends Error {
   constructor() {
     super('As tags não podem conter espaços')
   }

@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id        String  @unique @default(uuid())
+  username  String  @unique
+  email     String  @unique
+  is_active Boolean @default(false)
+  password  String
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt()
+
+  memes memes[]
+  tags  tags[]
+}
+
+model memes {
+  id          String @unique @default(uuid())
+  fk_author   String
+  author      users  @relation(fields: [fk_author], references: [id])
+  content_uri String @unique
+}
+
+model tags {
+  id      String @unique @default(uuid())
+  fk_meme String
+  meme    users  @relation(fields: [fk_meme], references: [id])
+  name    String
+  weight  String
+}

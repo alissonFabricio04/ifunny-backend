@@ -1,9 +1,9 @@
-import { Id } from "../../entities/id/model/id-value-object"
-import { MemeGateway } from "../../entities/meme/gateways/meme-gateway"
-import { Comment } from "../../entities/meme/model/comment"
-import { Meme } from "../../entities/meme/model/meme"
-import { UseCase, DTO } from "../user-case"
+/* eslint-disable @typescript-eslint/no-empty-interface */
 
+import { Id } from '../../entities/id/model/id-value-object'
+import { MemeGateway } from '../../entities/meme/gateways/meme-gateway'
+import { Comment } from '../../entities/meme/model/comment'
+import { InDTO, OutDTO, UseCase } from '../user-case'
 
 interface InputDTO {
   memeId: string
@@ -11,29 +11,33 @@ interface InputDTO {
   content: {
     midia?: {
       postId: string
-    },
+    }
     text?: string
   }
 }
 
 interface OutputDTO {}
 
-export class PublishMemeUseCase implements UseCase<MemeGateway, InputDTO, OutputDTO> {
-  constructor(
-    readonly gateway: MemeGateway
-  ) {}
+export class AddCommentUseCase
+  implements UseCase<MemeGateway, InputDTO, OutputDTO>
+{
+  readonly gateway: MemeGateway
 
-  async handle(inputDTO: DTO<InputDTO>): Promise<DTO<OutputDTO>> {
-    let midia;
-    let text;
+  constructor(gateway: MemeGateway) {
+    this.gateway = gateway
+  }
 
-    if(inputDTO.data.content.midia?.postId) {
+  async handle(inputDTO: InDTO<InputDTO>): Promise<OutDTO<OutputDTO>> {
+    let midia
+    let text
+
+    if (inputDTO.data.content.midia?.postId) {
       midia = {
-        postId: new Id(inputDTO.data.content.midia?.postId)
+        postId: new Id(inputDTO.data.content.midia?.postId),
       }
     }
 
-    if(inputDTO.data.content.text) {
+    if (inputDTO.data.content.text) {
       text = inputDTO.data.content.text
     }
 
@@ -43,15 +47,15 @@ export class PublishMemeUseCase implements UseCase<MemeGateway, InputDTO, Output
       new Id(inputDTO.data.authorId),
       {
         midia,
-        text
-      }
+        text,
+      },
     )
 
     await this.gateway.addComment(new Id(inputDTO.data.memeId), comment)
 
     return {
       status: 'SUCCESS',
-      data: {}
+      data: {},
     }
   }
 }

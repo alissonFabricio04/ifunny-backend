@@ -1,11 +1,11 @@
-import { randomUUID } from "crypto"
-import { IdNotAreAUUIDError } from "../errors/id-with-format-invalid-error"
+import { randomUUID } from 'crypto'
+import { IdNotAreAUUIDError } from '../errors/id-with-format-invalid-error'
 
 export class Id {
   private _id: string
 
   constructor(id?: string) {
-    this.id = id ? id : randomUUID() 
+    this.id = id || randomUUID()
   }
 
   private get id(): string {
