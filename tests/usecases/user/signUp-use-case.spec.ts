@@ -54,6 +54,8 @@ describe('Suite test for testing sign up use case', () => {
   })
 
   test('it should be able sign up', async () => {
+    gateway.find = () => new Promise((resolve) => resolve(null))
+    
     const input = {
       data: {
         username: user.username,

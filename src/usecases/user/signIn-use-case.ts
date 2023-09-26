@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-import { compare } from 'bcrypt'
 import { sign } from 'jsonwebtoken'
 
 import { UserGateway } from '../../entities/user/gateways/user-gateway'
@@ -33,13 +32,22 @@ export class SignInUseCase
   }
 
   async handle(inputDTO: InDTO<InputDTO>): Promise<OutDTO<OutputDTO | {}>> {
+    if (!inputDTO.data.username || !inputDTO.data.password) {
+      throw new Error('Username ou senha inválidos')
+    }
+
     const userExists = await this.gateway.find(inputDTO.data.username)
 
     if (!userExists) {
       throw new UserNotFoundError()
     }
 
-    if (!(await compare(inputDTO.data.password, userExists.password || ''))) {
+    try {
+      if (!(await Bun.password.verify(inputDTO.data.password, userExists.password || ''))) {
+        console.log(inputDTO.data.password, userExists)
+        throw new PasswordIncorrect()
+      }
+    } catch (error) {
       throw new PasswordIncorrect()
     }
 

@@ -8,4 +8,5 @@ export interface MemeGateway {
   find: (memeId: Id) => Promise<Meme | null>
   memesInLast1h: (qty: number) => Promise<Meme[]>
   lastLikes: (userId: Id, qty: number) => Promise<Meme[]>
+  like: (memeId: Id, userId: Id) => Promise<void>
 }

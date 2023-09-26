@@ -23,7 +23,7 @@ export class FeedMemeUseCase
 
   async handle(inputDTO: InDTO<InputDTO>): Promise<OutDTO<OutputDTO>> {
     const userLast20Likes = await this.gateway.lastLikes(
-      new Id(inputDTO.data.userId),
+      new Id(inputDTO.data.userId ?? 'failed'),
       20,
     )
     const memesInLast1h = await this.gateway.memesInLast1h(

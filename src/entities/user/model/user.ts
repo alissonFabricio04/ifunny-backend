@@ -100,7 +100,7 @@ export class User {
     return this._password
   }
 
-  private set password(password: string | undefined) {
+  set password(password: string | undefined) {
     if (password) {
       const regexUpperCase = /[A-Z]/
       const regexLowerCase = /[a-z]/
@@ -111,7 +111,7 @@ export class User {
         throw new PasswordTooShortError()
       }
 
-      if (password.length > 48) {
+      if (password.length > 100) {
         throw new PasswordTooLongError()
       }
 

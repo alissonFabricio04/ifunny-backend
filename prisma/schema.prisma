@@ -17,8 +17,10 @@ model users {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt()
 
-  memes memes[]
-  tags  tags[]
+  memes         memes[]
+  comments      comments[]
+  comments_meme comments_meme[]
+  likes         likes[]
 }
 
 model memes {
@@ -26,12 +28,51 @@ model memes {
   fk_author   String
   author      users  @relation(fields: [fk_author], references: [id])
   content_uri String @unique
+
+  created_at DateTime @default(now())
+
+  tags          tags[]
+  comments      comments[]
+  comments_meme comments_meme[]
+  likes         likes[]
 }
 
 model tags {
-  id      String @unique @default(uuid())
+  id      String  @unique @default(uuid())
   fk_meme String
-  meme    users  @relation(fields: [fk_meme], references: [id])
+  meme    memes   @relation(fields: [fk_meme], references: [id])
   name    String
-  weight  String
+  weight  Decimal
+}
+
+model comments_meme {
+  id String @unique @default(uuid())
+
+  fk_author String
+  author    users  @relation(fields: [fk_author], references: [id])
+
+  fk_comment String
+  comment    comments @relation(fields: [fk_comment], references: [id])
+
+  fk_meme String
+  meme    memes  @relation(fields: [fk_meme], references: [id])
+}
+
+model comments {
+  id        String  @unique @default(uuid())
+  text      String?
+  fk_repub  String?
+  repub     memes?  @relation(fields: [fk_repub], references: [id])
+  fk_author String
+  author    users   @relation(fields: [fk_author], references: [id])
+
+  comments_meme comments_meme[]
+}
+
+model likes {
+  id      String @unique @default(uuid())
+  fk_user String
+  user    users  @relation(fields: [fk_user], references: [id])
+  fk_meme String
+  meme    memes  @relation(fields: [fk_meme], references: [id])
 }

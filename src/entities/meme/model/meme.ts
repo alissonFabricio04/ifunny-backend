@@ -72,7 +72,7 @@ export class Meme {
       throw new MemeWithoutContentError()
     }
 
-    const url = new URL(content.uri)
+    const url = new URL(content.uri ?? Bun.env.SELF_URL)
     if (!(url.protocol === 's3:')) {
       throw new MemeURIInvalidError()
     }
@@ -98,7 +98,11 @@ export class Meme {
     }
 
     for (let index = 0; index < tags.length; index++) {
-      if (!tags[index].name || tags[index].name.includes(' ')) {
+      // if (!tags[index].name || tags[index].name.includes(' ')) {
+      //   throw new TagContainsWhiteSpacesError()
+      // }
+
+      if (!tags[index].name || tags[index].name.length > 100) {
         throw new TagContainsWhiteSpacesError()
       }
 
@@ -110,6 +114,8 @@ export class Meme {
       ) {
         throw new InvalidTagWeightError()
       }
+
+      tags[index].name = tags[index].name.toLowerCase()
     }
 
     this._tags = tags

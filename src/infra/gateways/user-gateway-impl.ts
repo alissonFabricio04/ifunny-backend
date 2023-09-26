@@ -34,6 +34,7 @@ export class UserGatewayImpl implements UserGateway {
       userExists.username,
       new Email(userExists.email),
       userExists.is_active,
+      userExists.password
     )
   }
 }

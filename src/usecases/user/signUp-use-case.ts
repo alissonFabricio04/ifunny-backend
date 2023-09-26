@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
-
-import { isDeepStrictEqual } from 'node:sys'
 import { sign } from 'jsonwebtoken'
 
 import { Email } from '../../entities/email/model/email-value-object'
@@ -36,7 +34,9 @@ export class SignUpUseCase
 
   async handle(inputDTO: InDTO<InputDTO>): Promise<OutDTO<OutputDTO>> {
     if (
-      !isDeepStrictEqual(inputDTO.data.password, inputDTO.data.passwordAgain)
+      !Bun.deepEquals(inputDTO.data.password, inputDTO.data.passwordAgain) ||
+      !inputDTO.data.password ||
+      !inputDTO.data.passwordAgain
     ) {
       throw new PasswordsAreDifferentError()
     }
@@ -49,6 +49,12 @@ export class SignUpUseCase
       inputDTO.data.password,
     )
 
+    const userAlreadyExists = await this.gateway.find(user.username)
+
+    if (userAlreadyExists) {
+      throw new Error('E-mail ou username já em uso')
+    }
+
     const tokenForValidateEmail = sign(
       {
         id: user.id.toString(),
@@ -58,6 +64,11 @@ export class SignUpUseCase
         expiresIn: '1h',
       },
     )
+
+    const passwordHash = await Bun.password.hash(user.password || '', {
+      algorithm: 'bcrypt'
+    })
+    user.password = passwordHash
 
     await this.gateway.save(user)
     await this.notificationAdapter.send(user, 'Validação de e-mail', {
