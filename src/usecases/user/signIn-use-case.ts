@@ -44,7 +44,6 @@ export class SignInUseCase
 
     try {
       if (!(await Bun.password.verify(inputDTO.data.password, userExists.password || ''))) {
-        console.log(inputDTO.data.password, userExists)
         throw new PasswordIncorrect()
       }
     } catch (error) {

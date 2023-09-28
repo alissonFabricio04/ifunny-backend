@@ -107,7 +107,7 @@ export class Meme {
       }
 
       if (
-        tags[index].weight <= 0 ||
+        tags[index].weight < 0 ||
         isNaN(tags[index].weight) ||
         !isFinite(tags[index].weight) ||
         !Number.isSafeInteger(tags[index].weight)

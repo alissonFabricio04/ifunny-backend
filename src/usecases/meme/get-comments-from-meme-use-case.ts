@@ -2,16 +2,19 @@
 
 import { Id } from '../../entities/id/model/id-value-object'
 import { MemeGateway } from '../../entities/meme/gateways/meme-gateway'
+import { Comment } from '../../entities/meme/model/comment'
 import { InDTO, OutDTO, UseCase } from '../user-case'
 
 interface InputDTO {
-  userId: string
   memeId: string
+  page: number
 }
 
-interface OutputDTO {}
+interface OutputDTO {
+  comments: Array<Comment>
+}
 
-export class LikeMemeUseCase
+export class GetCommentsFromMemeUseCase
   implements UseCase<MemeGateway, InputDTO, OutputDTO>
 {
   readonly gateway: MemeGateway
@@ -21,23 +24,25 @@ export class LikeMemeUseCase
   }
 
   async handle(inputDTO: InDTO<InputDTO>): Promise<OutDTO<OutputDTO>> {
-    const memeExists = await this.gateway.find(new Id(inputDTO.data.memeId))
+    const memeId = new Id(inputDTO.data.memeId ?? 'failed')
+
+    const memeExists = await this.gateway.find(memeId)
 
     if(!memeExists) {
       throw new Error('Conteúdo não encontrado')
     }
 
-    const userAlreadyLikedMeme = await this.gateway.alreadyLikedMeme(new Id(inputDTO.data.memeId ?? 'failed'), new Id(inputDTO.data.userId ?? 'failed'))
+    let page = Number(inputDTO.data.page)
+    isNaN(page) ? page = 1 : null
 
-    if(userAlreadyLikedMeme) {
-      throw new Error('Você já deu like neste meme')
-    }
-
-    await this.gateway.like(new Id(inputDTO.data.memeId ?? 'failed'), new Id(inputDTO.data.userId ?? 'failed'))
+    console.log(inputDTO.data.page)
+    const comments = await this.gateway.getComments(memeId, inputDTO.data.page)
 
     return {
       status: 'SUCCESS',
-      data: {},
+      data: {
+        comments
+      },
     }
   }
 }

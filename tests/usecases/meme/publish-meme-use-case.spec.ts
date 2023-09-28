@@ -27,18 +27,21 @@ describe('Suite test for testing publish meme use case', () => {
       publish: jest.fn().mockImplementationOnce(() => Promise.resolve()),
       addComment: jest.fn().mockImplementationOnce(() => Promise.resolve()),
       find: () => new Promise((resolve) => resolve(meme)),
-      memesInLast1h: () => new Promise((resolve) => resolve([meme])),
+      recentMemesNotLikedByUser: () => new Promise((resolve) => resolve([meme])),
       lastLikes: () => new Promise((resolve) => resolve([meme])),
+      like: jest.fn().mockImplementationOnce(() => Promise.resolve()),
     } satisfies MemeGateway
 
     publishMemeUseCase = new PublishMemeUseCase(gateway)
   })
 
   test('it should be able publish a new meme', async () => {
+    gateway.find = () => new Promise((resolve) => resolve(null))
+
     const input = {
       data: {
         authorId: meme.authorId.toString(),
-        content: 's3://meu-bucket/arquivo-de-teste.mp3',
+        content: 's3://meu-bucket/teste.mp3',
         tags: meme.tags,
       },
     }

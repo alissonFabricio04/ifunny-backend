@@ -1,11 +1,10 @@
 import { Id } from '../../entities/id/model/id-value-object'
 import { MemeGateway } from '../../entities/meme/gateways/meme-gateway'
 import { Meme } from '../../entities/meme/model/meme'
-import { InDTO, OutDTO, UseCase } from '../user-case'
+import { UseCase, InDTO, OutDTO } from '../user-case'
 
 interface InputDTO {
   userId: string
-  alreadySeen: Array<{ id: string }>
 }
 
 interface OutputDTO {
@@ -16,66 +15,56 @@ export class FeedMemeUseCase
   implements UseCase<MemeGateway, InputDTO, OutputDTO>
 {
   readonly gateway: MemeGateway
-
+  
   constructor(gateway: MemeGateway) {
     this.gateway = gateway
   }
 
   async handle(inputDTO: InDTO<InputDTO>): Promise<OutDTO<OutputDTO>> {
     const userLast20Likes = await this.gateway.lastLikes(
-      new Id(inputDTO.data.userId ?? 'failed'),
-      20,
+      new Id(inputDTO.data.userId),
+      200,
     )
-    const memesInLast1h = await this.gateway.memesInLast1h(
-      userLast20Likes.length,
+    const recentMemesNotLikedByUser = await this.gateway.recentMemesNotLikedByUser(
+      new Id(inputDTO.data.userId),
+      200
     )
 
     const userPreferencesMap: Map<string, number> = new Map()
     for (const like of userLast20Likes) {
       for (const tag of like.tags) {
-        if (!userPreferencesMap.has(tag.name)) {
-          userPreferencesMap.set(tag.name, tag.weight)
-        }
+        const currentTagWeight = userPreferencesMap.get(tag.name) ?? 0
+        userPreferencesMap.set(tag.name, currentTagWeight + tag.weight)
       }
     }
-    const userPreferencesArray = Array.from(userPreferencesMap.values())
 
     const recommendations: Array<Meme> = []
 
-    for (const meme of memesInLast1h) {
-      if (
-        inputDTO.data.alreadySeen.some(
-          (memeAlreadySeen) => memeAlreadySeen.id === meme.id.toString(),
-        )
-      ) {
-        continue
-      }
-
+    for (const meme of recentMemesNotLikedByUser) {
       const memeTagsMap: Map<string, number> = new Map()
       for (const tag of meme.tags) {
-        if (!memeTagsMap.has(tag.name)) {
-          memeTagsMap.set(tag.name, tag.weight)
-        }
+        const currentTagWeight = (memeTagsMap.get(tag.name) ?? 0)
+        memeTagsMap.set(tag.name, currentTagWeight + tag.weight)
       }
 
       let dotProduct = 0
       let normMemeTags = 0
       let normUserPreferences = 0
 
-      let count = 0
-      memeTagsMap.forEach((value) => {
-        dotProduct += value * userPreferencesArray[count]
-        normMemeTags += value ** 2
-        normUserPreferences += userPreferencesArray[count] ** 2
-        count++
-      })
+      for (const [tagName, tf] of memeTagsMap.entries()) {
+        const tagWeight = userPreferencesMap.get(tagName) ?? 0
+        dotProduct += tf * tagWeight
+        normMemeTags += tf ** 2
+        normUserPreferences += (tagWeight ?? 0) ** 2
+      }
 
-      normMemeTags = Math.sqrt(normMemeTags)
-      normUserPreferences = Math.sqrt(normUserPreferences)
+      const sqrtNormMemeTags = Math.sqrt(normMemeTags)
+      const sqrtNormUserPreferences = Math.sqrt(normUserPreferences)
 
-      const similarity = dotProduct / (normMemeTags * normUserPreferences)
+      let similarity = dotProduct / (sqrtNormMemeTags * sqrtNormUserPreferences)
+      isNaN(similarity) ? similarity = -1 : null
 
-      if (similarity > 0.5) {
+      if (similarity >= 0.5) {
         recommendations.push(meme)
       }
     }

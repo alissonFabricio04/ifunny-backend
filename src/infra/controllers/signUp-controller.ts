@@ -1,9 +1,10 @@
 import { SignUpUseCase } from '../../usecases/user/signUp-use-case'
 import { NotificationAdapterImpl } from '../adapters/notification/email/notification-adapter-impl'
 import { UserGatewayImpl } from '../gateways/user-gateway-impl'
+import { Controller } from './controller'
 
-export class SignUpController {
-  static async handle(request: Request) {
+export class SignUpController implements Controller {
+  async handle(request: Request) {
     if (!request.body?.values()) {
       throw new Error('Falta de conteúdo na requisição')
     }

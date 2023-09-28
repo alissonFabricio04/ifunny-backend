@@ -31,13 +31,17 @@ export class AddCommentUseCase
     let midia
     let text
 
-    if (inputDTO.data.content.midia?.postId) {
+    if(inputDTO.data?.content?.midia && typeof inputDTO.data?.content?.midia !== 'object') {
+      throw new Error('Não é possivel marcar mais de um conteúdo em um comentario')
+    }
+
+    if (inputDTO.data?.content?.midia?.postId) {
       midia = {
         postId: new Id(inputDTO.data.content.midia?.postId),
       }
     }
 
-    if (inputDTO.data.content.text) {
+    if (inputDTO.data?.content?.text) {
       text = inputDTO.data.content.text
     }
 

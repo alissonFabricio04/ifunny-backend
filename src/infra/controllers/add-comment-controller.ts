@@ -1,23 +1,24 @@
-import { LikeMemeUseCase } from "../../usecases/meme/like-meme-use-case"
+import { AddCommentUseCase } from "../../usecases/meme/add-comment-use-case"
 import { MemeGatewayImpl } from "../gateways/meme-gateway-impl"
 import { Controller } from "./controller"
 
-export class LikeMemeController implements Controller {
+export class AddCommentController implements Controller {
   async handle(body: any) {
-    const useCase = new LikeMemeUseCase(
+    const useCase = new AddCommentUseCase(
       new MemeGatewayImpl(),
     )
 
     const { status, data } = await useCase.handle({
       data: {
-        userId: body.userId,
-        memeId: body.memeId
+        memeId: body.memeId,
+        authorId: body.userId,
+        content: body.content
       },
     })
     if (status !== 'SUCCESS') {
       return new Response(null, { status: 500 })
     }
 
-    return new Response(null, { status: 204 })
+    return new Response(null, { status: 201 })
   }
 }

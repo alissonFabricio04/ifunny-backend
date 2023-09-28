@@ -8,7 +8,7 @@ import { InDTO, OutDTO, UseCase } from '../user-case'
 interface InputDTO {
   authorId: string
   content: string
-  tags: Array<{ name: string; weight: number }>
+  tags: Array<{ name: string }>
 }
 
 interface OutputDTO {}
@@ -23,11 +23,14 @@ export class PublishMemeUseCase
   }
 
   async handle(inputDTO: InDTO<InputDTO>): Promise<OutDTO<OutputDTO>> {
+    const tags: Array<{ name: string, weight: number }> = []
+    inputDTO.data.tags.forEach(tag => tags.push({ ...tag, weight: 1 }))
+
     const meme = new Meme(
       new Id(),
       new Id(inputDTO.data.authorId),
       { uri: inputDTO.data.content },
-      inputDTO.data.tags,
+      tags,
     )
     
     const contentURIAlreadyRegistered = await this.gateway.find(meme.id)

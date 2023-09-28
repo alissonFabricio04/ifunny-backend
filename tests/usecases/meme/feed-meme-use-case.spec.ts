@@ -42,8 +42,9 @@ describe('Suite test for testing feed meme use case', () => {
       publish: jest.fn().mockImplementationOnce(() => Promise.resolve()),
       addComment: jest.fn().mockImplementationOnce(() => Promise.resolve()),
       find: () => new Promise((resolve) => resolve(memes[0])),
-      memesInLast1h: () => new Promise((resolve) => resolve(memes)),
+      recentMemesNotLikedByUser: () => new Promise((resolve) => resolve([meme02])),
       lastLikes: () => new Promise((resolve) => resolve([meme01])),
+      like: jest.fn().mockImplementationOnce(() => Promise.resolve()),
     } satisfies MemeGateway
 
     feedMemeUseCase = new FeedMemeUseCase(gateway)
@@ -53,7 +54,6 @@ describe('Suite test for testing feed meme use case', () => {
     const input = {
       data: {
         userId: '8f451c11-ef44-4970-a4f8-e083ed6f5c62',
-        alreadySeen: [{ id: meme01.id.toString() }],
       },
     }
 

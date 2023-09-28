@@ -1,16 +1,9 @@
 import { PublishMemeUseCase } from "../../usecases/meme/publish-meme-use-case"
 import { MemeGatewayImpl } from "../gateways/meme-gateway-impl"
+import { Controller } from "./controller"
 
-export class PublishMemeController {
-  static async handle(request: Request) {
-    if (!request.body?.values()) {
-      throw new Error('Falta de conteúdo na requisição')
-    }
-
-    const body = await Bun.readableStreamToJSON(
-      request.body ?? new ReadableStream(),
-    )
-
+export class PublishMemeController implements Controller {
+  async handle(body: any) {
     const useCase = new PublishMemeUseCase(
       new MemeGatewayImpl(),
     )
