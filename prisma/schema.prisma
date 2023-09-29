@@ -24,62 +24,74 @@ model users {
 }
 
 model memes {
-  id          String @unique @default(uuid())
-  fk_author   String
-  author      users  @relation(fields: [fk_author], references: [id])
+  id String @unique @default(uuid())
+
+  fk_author String
+  author    users  @relation(fields: [fk_author], references: [id])
+
   content_uri String @unique
 
   created_at DateTime @default(now())
 
-  tags  tags[]
-  likes likes[]
-
+  tags     tags[]
   comments comments[]
-  repubs   repubs[]
+  likes    likes[]
+
+  repubs repubs[]
 }
 
 model tags {
-  id      String  @unique @default(uuid())
+  id String @unique @default(uuid())
+
   fk_meme String
-  meme    memes   @relation(fields: [fk_meme], references: [id])
-  name    String
-  weight  Decimal @default(1)
+  meme    memes  @relation(fields: [fk_meme], references: [id])
+
+  name String
 }
 
 model comments {
-  id        String  @unique @default(uuid())
-  text      String?
-  fk_repub  String?
-  repub     repubs? @relation(fields: [fk_repub], references: [id])
+  id   String  @unique @default(uuid())
+  text String?
+
+  fk_repub String? @unique
+  repub    repubs? @relation(fields: [fk_repub], references: [id])
+
   fk_author String
-  author    users   @relation(fields: [fk_author], references: [id])
-  fk_meme   String
-  meme      memes   @relation(fields: [fk_meme], references: [id])
+  author    users  @relation(fields: [fk_author], references: [id])
+
+  fk_meme String
+  meme    memes  @relation(fields: [fk_meme], references: [id])
 }
 
 model likes {
-  id      String @unique @default(uuid())
+  id String @unique @default(uuid())
+
   fk_user String
   user    users  @relation(fields: [fk_user], references: [id])
+
   fk_meme String
   meme    memes  @relation(fields: [fk_meme], references: [id])
 }
 
 model folders {
-  id         String @unique @default(uuid())
-  fk_owner   String
-  owner      users  @relation(fields: [fk_owner], references: [id])
+  id String @unique @default(uuid())
+
+  fk_owner String
+  owner    users  @relation(fields: [fk_owner], references: [id])
+
   folderName String
 
   repubs repubs[]
 }
 
 model repubs {
-  id        String  @unique @default(uuid())
+  id String @unique @default(uuid())
+
   fk_folder String
   folder    folders @relation(fields: [fk_folder], references: [id])
-  fk_meme   String
-  meme      memes   @relation(fields: [fk_meme], references: [id])
 
-  comments comments[]
+  fk_meme String
+  meme    memes  @relation(fields: [fk_meme], references: [id])
+
+  comments comments?
 }

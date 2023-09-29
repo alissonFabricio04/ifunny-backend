@@ -1,6 +1,6 @@
-import { PublishMemeUseCase } from "../../usecases/meme/publish-meme-use-case"
-import { MemeGatewayImpl } from "../gateways/meme-gateway-impl"
-import { Controller } from "./controller"
+import { PublishMemeUseCase } from "../../../usecases/meme/publish-meme-use-case"
+import { MemeGatewayImpl } from "../../gateways/meme-gateway-impl"
+import { Controller } from "../controller"
 
 export class PublishMemeController implements Controller {
   async handle(body: any) {
@@ -10,7 +10,7 @@ export class PublishMemeController implements Controller {
 
     const { status, data } = await useCase.handle({
       data: {
-        authorId: body.authorId,
+        authorId: body.userId,
         content: body.content,
         tags: body.tags,
       },

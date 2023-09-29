@@ -1,6 +1,6 @@
-import { FeedMemeUseCase } from "../../usecases/meme/feed-meme-use-case"
-import { MemeGatewayImpl } from "../gateways/meme-gateway-impl"
-import { Controller } from "./controller"
+import { FeedMemeUseCase } from "../../../usecases/meme/feed-meme-use-case"
+import { MemeGatewayImpl } from "../../gateways/meme-gateway-impl"
+import { Controller } from "../controller"
 
 export class FeedMemeController implements Controller {
   async handle(body: any) {

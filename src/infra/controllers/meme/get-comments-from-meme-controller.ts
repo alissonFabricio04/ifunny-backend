@@ -1,6 +1,6 @@
-import { GetCommentsFromMemeUseCase } from "../../usecases/meme/get-comments-from-meme-use-case"
-import { MemeGatewayImpl } from "../gateways/meme-gateway-impl"
-import { Controller } from "./controller"
+import { GetCommentsFromMemeUseCase } from "../../../usecases/meme/get-comments-from-meme-use-case"
+import { MemeGatewayImpl } from "../../gateways/meme-gateway-impl"
+import { Controller } from "../controller"
 
 export class GetCommentsFromMemeController implements Controller {
   async handle(body: any) {

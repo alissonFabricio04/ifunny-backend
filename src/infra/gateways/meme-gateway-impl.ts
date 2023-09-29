@@ -20,7 +20,6 @@ export class MemeGatewayImpl implements MemeGateway {
       await this.prismaORM.tags.create({
         data: {
           name: tag.name,
-          weight: tag.weight,
           fk_meme: meme.id.toString()
         }
       })
@@ -33,31 +32,17 @@ export class MemeGatewayImpl implements MemeGateway {
         id: comment.id.toString(),
         text: comment.content.text,
         fk_repub: comment.content.midia?.postId.toString(),
+        fk_meme: memeId.toString(),
         fk_author: comment.authorId.toString()
-      }
-    })
-
-    await this.prismaORM.comments_meme.create({
-      data: {
-        fk_author: comment.authorId.toString(),
-        fk_comment: comment.id.toString(),
-        fk_meme: comment.memeId.toString()
       }
     })
   }
 
   async getComments(memeId: Id, page: number) {
     const peerPage = 20
-    const c = await this.prismaORM.comments_meme.findMany({
+    const c = await this.prismaORM.comments.findMany({
       take: peerPage,
       skip: Number(page - 1) * peerPage,
-      include: {
-        comment: {
-          include: {
-            repub: true
-          }
-        }
-      },
       where: {
         fk_meme: memeId.toString()
       }
@@ -66,8 +51,8 @@ export class MemeGatewayImpl implements MemeGateway {
     const comments: Array<Comment> = []
     
     c.forEach(comment => {
-      const midia = comment.comment.fk_repub !== null ? 
-        { postId: new Id(comment.comment.fk_repub) } :
+      const midia = comment.fk_repub !== null ? 
+        { postId: new Id(comment.fk_repub) } :
         undefined
 
       comments.push(new Comment(
@@ -76,7 +61,7 @@ export class MemeGatewayImpl implements MemeGateway {
         new Id(comment.fk_author),
         {
           midia,
-          text: comment.comment.text !== null ? comment.comment.text : undefined
+          text: comment.text !== null ? comment.text : undefined
         }
       ))
     })
@@ -99,8 +84,8 @@ export class MemeGatewayImpl implements MemeGateway {
     }
 
     const tags: Array<{ name: string, weight: number }> = []
-    meme.tags.forEach(({ name, weight }) => {
-      tags.push({ name, weight: weight.toNumber() })
+    meme.tags.forEach(({ name }) => {
+      tags.push({ name, weight: 1 })
     })
 
     return new Meme(
@@ -144,9 +129,8 @@ export class MemeGatewayImpl implements MemeGateway {
     const m: Array<Meme> = []
     memes.forEach(meme => {
       const tags: Array<{ name: string, weight: number }> = []
-      meme.tags.forEach(({ name, weight }) => {
-        tags.push({ name, weight: weight.toNumber() })
-        // tags.push({ name, weight: 1 })
+      meme.tags.forEach(({ name }) => {
+        tags.push({ name, weight: 1 })
       })
 
       m.push(new Meme(
@@ -179,8 +163,7 @@ export class MemeGatewayImpl implements MemeGateway {
     const lastLikes: Array<Meme> = []
     memes.forEach(meme => {
       const tags: Array<{ name: string, weight: number }> = []
-      meme.meme.tags.forEach(({ name, weight }) => {
-        // tags.push({ name, weight: weight.toNumber() })
+      meme.meme.tags.forEach(({ name }) => {
         tags.push({ name, weight: 1 })
       })
 

@@ -6,13 +6,14 @@ import { UseCase, InDTO, OutDTO } from "../user-case"
 
 interface InputDTO {
   userId: string
+  folderId?: string
   folderName: string
 }
 
 interface OutputDTO {}
 
 export class CreateNewFolderUseCase
-  implements UseCase<UserGateway, InputDTO, OutputDTO | {}>
+  implements UseCase<UserGateway, InputDTO, OutputDTO>
 {
   readonly gateway: UserGateway
 
@@ -20,7 +21,7 @@ export class CreateNewFolderUseCase
     this.gateway = gateway
   }
 
-  async handle(inputDTO: InDTO<InputDTO>): Promise<OutDTO<OutputDTO | {}>> {
+  async handle(inputDTO: InDTO<InputDTO>): Promise<OutDTO<OutputDTO>> {
     const userId = new Id(inputDTO.data.userId ?? 'failed')
 
     if(!inputDTO.data.folderName || inputDTO.data.folderName.length <= 0) {
@@ -33,7 +34,9 @@ export class CreateNewFolderUseCase
       throw new Error('Você já possui uma pasta com esse nome')
     }
 
-    await this.gateway.createFolder(userId, inputDTO.data.folderName)
+    const folderId = inputDTO.data.folderId ? new Id(inputDTO.data.folderId) : new Id()
+
+    await this.gateway.createFolder(userId, folderId, inputDTO.data.folderName)
 
     return {
       status: 'SUCCESS',

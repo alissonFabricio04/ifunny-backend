@@ -1,7 +1,7 @@
-import { SignUpUseCase } from '../../usecases/user/signUp-use-case'
-import { NotificationAdapterImpl } from '../adapters/notification/email/notification-adapter-impl'
-import { UserGatewayImpl } from '../gateways/user-gateway-impl'
-import { Controller } from './controller'
+import { SignUpUseCase } from '../../../usecases/user/signUp-use-case'
+import { NotificationAdapterImpl } from '../../adapters/notification/email/notification-adapter-impl'
+import { UserGatewayImpl } from '../../gateways/user-gateway-impl'
+import { Controller } from '../controller'
 
 export class SignUpController implements Controller {
   async handle(request: Request) {

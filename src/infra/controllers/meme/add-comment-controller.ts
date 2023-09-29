@@ -1,6 +1,6 @@
-import { AddCommentUseCase } from "../../usecases/meme/add-comment-use-case"
-import { MemeGatewayImpl } from "../gateways/meme-gateway-impl"
-import { Controller } from "./controller"
+import { AddCommentUseCase } from "../../../usecases/meme/add-comment-use-case"
+import { MemeGatewayImpl } from "../../gateways/meme-gateway-impl"
+import { Controller } from "../controller"
 
 export class AddCommentController implements Controller {
   async handle(body: any) {

@@ -1,6 +1,6 @@
-import { LikeMemeUseCase } from "../../usecases/meme/like-meme-use-case"
-import { MemeGatewayImpl } from "../gateways/meme-gateway-impl"
-import { Controller } from "./controller"
+import { LikeMemeUseCase } from "../../../usecases/meme/like-meme-use-case"
+import { MemeGatewayImpl } from "../../gateways/meme-gateway-impl"
+import { Controller } from "../controller"
 
 export class LikeMemeController implements Controller {
   async handle(body: any) {

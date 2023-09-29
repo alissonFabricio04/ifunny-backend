@@ -37,13 +37,25 @@ export async function AuthMiddleware(request: Request, controller: Controller) {
       id: string
     }
 
+    
     if (request.method !== 'GET') {
+      if (!request.body) {
+        // throw new Error('Falta de conteúdo na requisição')
+        return new Response(
+          JSON.stringify({ error: 'Falta de conteúdo na requisição' }),
+          { status: 422 }
+        )
+      }
+      
       const body = await Bun.readableStreamToJSON(
         request.body ?? new ReadableStream(),
       )
 
       if (!body) {
-        throw new Error('Falta de conteúdo na requisição')
+        return new Response(
+          JSON.stringify({ error: 'Falta de conteúdo na requisição' }),
+          { status: 422 }
+        )
       }
 
       return controller.handle({ ...body, userId: tokenDecoded.id })
