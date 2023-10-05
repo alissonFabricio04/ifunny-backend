@@ -6,6 +6,7 @@ import { Id } from '../../../src/entities/id/model/id-value-object'
 import { UserGateway } from '../../../src/entities/user/gateways/user-gateway'
 import { User } from '../../../src/entities/user/model/user'
 import { SignInUseCase } from '../../../src/usecases/user/signIn-use-case'
+import { Meme } from '../../../src/entities/meme/model/meme'
 
 describe('Suite test for testing sign in use case', () => {
   let user: User
@@ -22,9 +23,27 @@ describe('Suite test for testing sign in use case', () => {
       'Al!ss0n04',
     )
 
+    const meme = new Meme(
+      new Id('7996dc77-4da0-4cab-b172-1296ed891800'),
+      new Id('8de4254c-f75f-4a77-a885-7b41de1b0cea'),
+      { uri: 's3://meu-bucket/arquivo-de-teste02.mp3' },
+      [
+        { name: 'nazismo', weight: 1 },
+        { name: 'é', weight: 1 },
+        { name: 'um', weight: 1 },
+        { name: 'lixo', weight: 1 },
+      ],
+    )
+
     gateway = {
       save: jest.fn().mockImplementationOnce(() => Promise.resolve()),
       find: () => new Promise((resolve) => resolve(user)),
+      alreadyFolderWithThisName: () => new Promise((resolve) => resolve(true)),
+      createFolder: jest.fn().mockImplementationOnce(() => Promise.resolve()),
+      folderExists: jest.fn().mockImplementationOnce(() => Promise.resolve(true)),
+      getFolders: jest.fn().mockImplementationOnce(() => Promise.resolve([])),
+      getMemeInFolder: jest.fn().mockImplementationOnce(() => Promise.resolve([meme])),
+      repubMeme: jest.fn().mockImplementationOnce(() => Promise.resolve()),
     } satisfies UserGateway
 
     notificationAdapter = {

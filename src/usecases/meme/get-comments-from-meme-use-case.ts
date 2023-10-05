@@ -35,7 +35,6 @@ export class GetCommentsFromMemeUseCase
     let page = Number(inputDTO.data.page)
     isNaN(page) ? page = 1 : null
 
-    console.log(inputDTO.data.page)
     const comments = await this.gateway.getComments(memeId, inputDTO.data.page)
 
     return {

@@ -30,6 +30,8 @@ describe('Suite test for testing publish meme use case', () => {
       recentMemesNotLikedByUser: () => new Promise((resolve) => resolve([meme])),
       lastLikes: () => new Promise((resolve) => resolve([meme])),
       like: jest.fn().mockImplementationOnce(() => Promise.resolve()),
+      alreadyLikedMeme: jest.fn().mockImplementationOnce(() => Promise.resolve(true)),
+      getComments: jest.fn().mockImplementationOnce(() => Promise.resolve([])),
     } satisfies MemeGateway
 
     publishMemeUseCase = new PublishMemeUseCase(gateway)

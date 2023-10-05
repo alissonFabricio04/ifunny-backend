@@ -18,10 +18,7 @@ describe('Suite test for testing feed meme use case', () => {
       new Id('5d86c647-3265-4cf4-babb-e5ce353a446a'),
       { uri: 's3://meu-bucket/arquivo-de-teste03.mp3' },
       [
-        { name: 'nazismo', weight: 10 },
-        { name: 'é', weight: 2 },
-        { name: 'uma', weight: 2 },
-        { name: 'merda', weight: 10 },
+        { name: 'nazismo', weight: 1 },
       ],
     )
     meme02 = new Meme(
@@ -29,10 +26,10 @@ describe('Suite test for testing feed meme use case', () => {
       new Id('8de4254c-f75f-4a77-a885-7b41de1b0cea'),
       { uri: 's3://meu-bucket/arquivo-de-teste02.mp3' },
       [
-        { name: 'nazismo', weight: 10 },
-        { name: 'é', weight: 2 },
-        { name: 'um', weight: 2 },
-        { name: 'lixo', weight: 10 },
+        { name: 'nazismo', weight: 1 },
+        { name: 'é', weight: 1 },
+        { name: 'um', weight: 1 },
+        { name: 'lixo', weight: 1 },
       ],
     )
 
@@ -45,6 +42,8 @@ describe('Suite test for testing feed meme use case', () => {
       recentMemesNotLikedByUser: () => new Promise((resolve) => resolve([meme02])),
       lastLikes: () => new Promise((resolve) => resolve([meme01])),
       like: jest.fn().mockImplementationOnce(() => Promise.resolve()),
+      alreadyLikedMeme: jest.fn().mockImplementationOnce(() => Promise.resolve(true)),
+      getComments: jest.fn().mockImplementationOnce(() => Promise.resolve([])),
     } satisfies MemeGateway
 
     feedMemeUseCase = new FeedMemeUseCase(gateway)
