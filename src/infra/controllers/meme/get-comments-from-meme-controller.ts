@@ -33,7 +33,8 @@ export class GetCommentsFromMemeController implements Controller {
         content: {
           midia,
           text
-        }
+        },
+        upvotes: comment._upvotes
       })
     })
 

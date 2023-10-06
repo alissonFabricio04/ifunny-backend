@@ -1,7 +1,9 @@
 import { AddCommentController } from '../controllers/meme/add-comment-controller'
+import { CollectiveMemeController } from '../controllers/meme/collective-controller'
 import { DownvoteCommentController } from '../controllers/meme/downvote-comment-controller'
 import { FeedMemeController } from '../controllers/meme/feed-meme-controller'
 import { GetCommentsFromMemeController } from '../controllers/meme/get-comments-from-meme-controller'
+import { HighlightsMemeController } from '../controllers/meme/highlight-meme-controller'
 import { LikeMemeController } from '../controllers/meme/like-meme-controller'
 import { PublishMemeController } from '../controllers/meme/publish-meme-controller'
 import { UpvoteCommentController } from '../controllers/meme/upvote-comment-controller'
@@ -73,6 +75,14 @@ export async function router(request: Request) {
 
   if (url.pathname === '/downvote-comment' && request.method === 'POST') {
     return AuthMiddleware(request, new DownvoteCommentController())
+  }
+
+  if (url.pathname === '/highlights' && request.method === 'GET') {
+    return AuthMiddleware(request, new HighlightsMemeController())
+  }
+
+  if (url.pathname === '/collective' && request.method === 'GET') {
+    return AuthMiddleware(request, new CollectiveMemeController())
   }
 
   return new Response(null, { status: 404 })

@@ -13,4 +13,6 @@ export interface MemeGateway {
   alreadyLikedMeme: (memeId: Id, userId: Id) => Promise<boolean>
   upvoteComment: (memeId: Id, userId: Id) => Promise<void>
   downvoteComment: (memeId: Id, userId: Id) => Promise<void>
+  highlights: (page: number) => Promise<Meme[]>
+  collective: (page: number) => Promise<Meme[]>
 }

@@ -7,7 +7,7 @@ import { prismaORM } from '../config/prisma-config'
 
 export class UserGatewayImpl implements UserGateway {
   readonly prismaORM = prismaORM
-  
+
   async save(user: User) {
     await this.prismaORM.users.create({
       data: {
@@ -18,67 +18,77 @@ export class UserGatewayImpl implements UserGateway {
       },
     })
   }
-  
+
   async find(username: string) {
     const userExists = await this.prismaORM.users.findUnique({
       where: {
         username,
       },
     })
-    
+
     if (!userExists) {
       return null
     }
-    
+
     return new User(
       new Id(userExists.id),
       userExists.username,
       new Email(userExists.email),
       userExists.is_active,
       userExists.password
-      )
-    }
-    
-    async alreadyFolderWithThisName(userId: Id, folderName: string) {
-      const f = await this.prismaORM.folders.findFirst({
-        where: {
-          fk_owner: userId.toString(),
-          folderName,
-        }
-      })
-      
-      if(f) {
-        return true
+    )
+  }
+
+  async alreadyFolderWithThisName(userId: Id, folderName: string) {
+    const f = await this.prismaORM.folders.findFirst({
+      where: {
+        fk_owner: userId.toString(),
+        folderName,
       }
-      
-      return false
-    }
-    
-    async createFolder(userId: Id, folderId: Id, folderName: string) {
-      await this.prismaORM.folders.create({
-        data: {
-          id: folderId.toString(),
-          fk_owner: userId.toString(),
-          folderName: folderName
-        }
-      })
-    }
-    
-    async folderExists(folderId: Id) {
-      const f = await this.prismaORM.folders.findFirst({
-        where: {
-          id: folderId.toString()
-        }
-      })
-      
-    if(f) {
+    })
+
+    if (f) {
       return true
     }
-    
+
     return false
   }
-  
+
+  async createFolder(userId: Id, folderId: Id, folderName: string) {
+    await this.prismaORM.folders.create({
+      data: {
+        id: folderId.toString(),
+        fk_owner: userId.toString(),
+        folderName: folderName
+      }
+    })
+  }
+
+  async folderExists(folderId: Id) {
+    const f = await this.prismaORM.folders.findFirst({
+      where: {
+        id: folderId.toString()
+      }
+    })
+
+    if (f) {
+      return true
+    }
+
+    return false
+  }
+
   async repubMeme(folderId: Id, memeId: Id) {
+    const memeExists = await this.prismaORM.memes.findUnique({
+      where: {
+        id: memeId.toString()
+      }
+    })
+
+    if (!memeExists) {
+      throw new Error('Conteúdo não encontrado')
+    }
+
     await this.prismaORM.repubs.create({
       data: {
         fk_folder: folderId.toString(),
@@ -121,7 +131,7 @@ export class UserGatewayImpl implements UserGateway {
     const memes: Array<Meme> = []
     m?.repubs.forEach(({ meme }) => {
       const tags: Array<{ name: string, weight: number }> = []
-      meme.tags.forEach(({ name, weight }) => tags.push({ name, weight: 1 }))
+      meme.tags.forEach(({ name }) => tags.push({ name, weight: 1 }))
 
       memes.push(new Meme(
         new Id(meme.id),

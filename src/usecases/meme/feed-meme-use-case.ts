@@ -32,6 +32,8 @@ export class FeedMemeUseCase
 
     const recommendations: Array<Meme> = [];
 
+      console.log(userLast20Likes, recentMemesNotLikedByUser)
+
     for (const meme of recentMemesNotLikedByUser) {
       const userTagsMap: Map<string, number> = new Map();
       const memeTagsMap: Map<string, number> = new Map();
@@ -65,8 +67,9 @@ export class FeedMemeUseCase
       });
 
       const similarity = this.calculateSimilarity(normalizedUserTags, normalizedMemeTags);
+      console.log(similarity, normalizedUserTags, normalizedMemeTags)
 
-      if (similarity >= 0.5) {
+      if (similarity >= 0.45) {
         recommendations.push(meme);
       }
     }

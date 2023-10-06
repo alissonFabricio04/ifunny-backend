@@ -43,15 +43,34 @@ export class MemeGatewayImpl implements MemeGateway {
     const c = await this.prismaORM.comments.findMany({
       take: peerPage,
       skip: Number(page - 1) * peerPage,
+      include: {
+        _count: {
+          select: {
+            like_comments: {
+              where: {
+                type: "UPVOTE"
+              }
+            },
+          },
+        },
+        like_comments: true,
+      },
       where: {
         fk_meme: memeId.toString()
-      }
+      },
+      orderBy: [
+        {
+          like_comments: {
+            _count: 'desc',
+          },
+        },
+      ],
     })
 
     const comments: Array<Comment> = []
-    
+
     c.forEach(comment => {
-      const midia = comment.fk_repub !== null ? 
+      const midia = comment.fk_repub !== null ?
         { postId: new Id(comment.fk_repub) } :
         undefined
 
@@ -62,7 +81,8 @@ export class MemeGatewayImpl implements MemeGateway {
         {
           midia,
           text: comment.text !== null ? comment.text : undefined
-        }
+        },
+        comment._count.like_comments,
       ))
     })
 
@@ -125,7 +145,7 @@ export class MemeGatewayImpl implements MemeGateway {
         },
       },
     })
-    
+
     const m: Array<Meme> = []
     memes.forEach(meme => {
       const tags: Array<{ name: string, weight: number }> = []
@@ -195,7 +215,7 @@ export class MemeGatewayImpl implements MemeGateway {
       }
     })
 
-    if(m) {
+    if (m) {
       return true
     }
 
@@ -203,6 +223,27 @@ export class MemeGatewayImpl implements MemeGateway {
   }
 
   async upvoteComment(commentId: Id, userId: Id) {
+    const commentExists = await this.prismaORM.comments.findUnique({
+      where: {
+        id: commentId.toString()
+      }
+    })
+
+    if (!commentExists) {
+      throw new Error('Conteúdo não encontrado')
+    }
+    
+    const userAlreadyUpvoteComment = await this.prismaORM.votes_comments.findFirst({
+      where: {
+        fk_user: userId.toString(),
+        fk_comment: commentId.toString()
+      }
+    })
+
+    if(userAlreadyUpvoteComment) {
+      throw new Error('Você já reagiu a esse comentário')
+    }
+
     await this.prismaORM.votes_comments.create({
       data: {
         fk_user: userId.toString(),
@@ -213,6 +254,27 @@ export class MemeGatewayImpl implements MemeGateway {
   }
 
   async downvoteComment(commentId: Id, userId: Id) {
+    const commentExists = await this.prismaORM.comments.findUnique({
+      where: {
+        id: commentId.toString()
+      }
+    })
+
+    if (!commentExists) {
+      throw new Error('Conteúdo não encontrado')
+    }
+    
+    const userAlreadyDownvoteComment = await this.prismaORM.votes_comments.findFirst({
+      where: {
+        fk_user: userId.toString(),
+        fk_comment: commentId.toString()
+      }
+    })
+
+    if(userAlreadyDownvoteComment) {
+      throw new Error('Você já reagiu a esse comentário')
+    }
+
     await this.prismaORM.votes_comments.create({
       data: {
         fk_user: userId.toString(),
@@ -220,5 +282,105 @@ export class MemeGatewayImpl implements MemeGateway {
         type: 'DOWNVOTE'
       }
     })
+  }
+
+  async highlights(page: number) {
+    const peerPage = 20
+    const currentDate = new Date()
+    const oneWeekAgo = new Date(currentDate.getTime() - 1000 * 60 * 60 * 24 * 7)
+
+    const memes = await this.prismaORM.memes.findMany({
+      take: peerPage,
+      skip: Number(page - 1) * peerPage,
+      include: {
+        tags: true,
+        likes: true,
+        repubs: true,
+        comments: true,
+      },
+      where: {
+        created_at: {
+          gte: oneWeekAgo,
+        },
+      },
+      orderBy: [
+        {
+          repubs: {
+            _count: 'desc',
+          },
+        },
+      ],
+    })
+
+    const minimumCommentAverage = 10
+    const minimumLikeAverage = 100
+
+    const highlightedMemes = memes.filter((meme) => {
+      const commentAverage = meme.comments.length / memes.length
+      const likeAverage = meme.likes.length / memes.length
+
+      return commentAverage >= minimumCommentAverage && likeAverage >= minimumLikeAverage
+    })
+
+    const m: Array<Meme> = []
+    highlightedMemes.forEach(meme => {
+      const tags: Array<{ name: string, weight: number }> = []
+      meme.tags.forEach(({ name }) => {
+        tags.push({ name, weight: 1 })
+      })
+
+      m.push(new Meme(
+        new Id(meme.id),
+        new Id(meme.fk_author),
+        { uri: meme.content_uri },
+        tags
+      ))
+    })
+
+    return m
+  }
+
+  async collective(page: number) {
+    const peerPage = 20
+    const currentDate = new Date()
+    const oneWeekAgo = new Date(currentDate.getTime() - 1000 * 60 * 60 * 24 * 14)
+
+    const memes = await this.prismaORM.memes.findMany({
+      take: peerPage,
+      skip: Number(page - 1) * peerPage,
+      include: {
+        tags: true,
+        likes: true,
+      },
+      where: {
+        created_at: {
+          gte: oneWeekAgo,
+        },
+      },
+      orderBy: [
+        {
+          likes: {
+            _count: 'desc',
+          },
+        },
+      ],
+    })
+
+    const m: Array<Meme> = []
+    memes.forEach(meme => {
+      const tags: Array<{ name: string, weight: number }> = []
+      meme.tags.forEach(({ name }) => {
+        tags.push({ name, weight: 1 })
+      })
+
+      m.push(new Meme(
+        new Id(meme.id),
+        new Id(meme.fk_author),
+        { uri: meme.content_uri },
+        tags
+      ))
+    })
+
+    return m
   }
 }

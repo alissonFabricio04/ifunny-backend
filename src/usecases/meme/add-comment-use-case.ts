@@ -16,7 +16,7 @@ interface InputDTO {
   }
 }
 
-interface OutputDTO {}
+interface OutputDTO { }
 
 export class AddCommentUseCase
   implements UseCase<MemeGateway, InputDTO, OutputDTO>
@@ -28,16 +28,28 @@ export class AddCommentUseCase
   }
 
   async handle(inputDTO: InDTO<InputDTO>): Promise<OutDTO<OutputDTO>> {
+    const memeExists = await this.gateway.find(new Id(inputDTO.data.memeId))
+
+    if (!memeExists) {
+      throw new Error('Conteúdo não encontrado')
+    }
+
     let midia
     let text
 
-    if(inputDTO.data?.content?.midia && typeof inputDTO.data?.content?.midia !== 'object') {
+    if (inputDTO.data?.content?.midia && typeof inputDTO.data?.content?.midia !== 'object') {
       throw new Error('Não é possivel marcar mais de um conteúdo em um comentario')
     }
 
     if (inputDTO.data?.content?.midia?.postId) {
       midia = {
         postId: new Id(inputDTO.data.content.midia?.postId),
+      }
+
+      const repubMemeIdExists = await this.gateway.find(midia.postId)
+
+      if (!repubMemeIdExists) {
+        throw new Error('Conteúdo não encontrado')
       }
     }
 

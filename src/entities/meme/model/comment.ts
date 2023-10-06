@@ -10,16 +10,33 @@ export type Content = {
 }
 
 export class Comment {
+  readonly _upvotes: number
+  readonly _downvotes: number
+
   constructor(
     private _id: Id,
     private _memeId: Id,
     private _authorId: Id,
     private _content: Content,
+    _upvotes?: number,
+    _downvotes?: number,
   ) {
     this.id = _id
     this.memeId = _memeId
     this.authorId = _authorId
     this.content = _content
+
+    if(_upvotes) {
+      this._upvotes = _upvotes
+    } else {
+      this._upvotes = 0
+    }
+
+    if(_downvotes) {
+      this._downvotes = _downvotes
+    } else {
+      this._downvotes = 0
+    }
   }
 
   public get id() {
