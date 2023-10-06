@@ -1,8 +1,10 @@
 import { AddCommentController } from '../controllers/meme/add-comment-controller'
+import { DownvoteCommentController } from '../controllers/meme/downvote-comment-controller'
 import { FeedMemeController } from '../controllers/meme/feed-meme-controller'
 import { GetCommentsFromMemeController } from '../controllers/meme/get-comments-from-meme-controller'
 import { LikeMemeController } from '../controllers/meme/like-meme-controller'
 import { PublishMemeController } from '../controllers/meme/publish-meme-controller'
+import { UpvoteCommentController } from '../controllers/meme/upvote-comment-controller'
 import { CreateNewFolderController } from '../controllers/user/create-new-folder-controller'
 import { GetFoldersController } from '../controllers/user/get-folders-use-case'
 import { GetMemesInFolderController } from '../controllers/user/get-memes-in-folder-controller'
@@ -13,6 +15,13 @@ import { AuthMiddleware } from '../middlewares/auth-middleware'
 
 export async function router(request: Request) {
   const url = new URL(request.url)
+
+  if (url.pathname === '/hello-world' && request.method === 'GET') {
+    return new Response(
+      JSON.stringify({ message: 'Hello World' }), 
+      { status: 200 }
+    )
+  }
   
   if (url.pathname === '/sign-up' && request.method === 'POST') {
     return new SignUpController().handle(request)
@@ -56,6 +65,14 @@ export async function router(request: Request) {
 
   if (url.pathname === '/get-memes-in-folder' && request.method === 'GET') {
     return AuthMiddleware(request, new GetMemesInFolderController())
+  }
+  
+  if (url.pathname === '/upvote-comment' && request.method === 'POST') {
+    return AuthMiddleware(request, new UpvoteCommentController())
+  }
+
+  if (url.pathname === '/downvote-comment' && request.method === 'POST') {
+    return AuthMiddleware(request, new DownvoteCommentController())
   }
 
   return new Response(null, { status: 404 })

@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -17,10 +17,11 @@ model users {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt()
 
-  memes    memes[]
-  comments comments[]
-  likes    likes[]
-  folders  folders[]
+  memes          memes[]
+  comments       comments[]
+  likes          likes[]
+  folders        folders[]
+  votes_comments votes_comments[]
 }
 
 model memes {
@@ -61,6 +62,25 @@ model comments {
 
   fk_meme String
   meme    memes  @relation(fields: [fk_meme], references: [id])
+
+  like_comments votes_comments[]
+}
+
+enum votes_comments_types {
+  UPVOTE
+  DOWNVOTE
+}
+
+model votes_comments {
+  id String @unique @default(uuid())
+
+  fk_comment String
+  comments   comments @relation(fields: [fk_comment], references: [id])
+
+  fk_user String
+  user    users  @relation(fields: [fk_user], references: [id])
+
+  type votes_comments_types
 }
 
 model likes {

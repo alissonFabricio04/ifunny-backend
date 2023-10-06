@@ -201,4 +201,24 @@ export class MemeGatewayImpl implements MemeGateway {
 
     return false
   }
+
+  async upvoteComment(commentId: Id, userId: Id) {
+    await this.prismaORM.votes_comments.create({
+      data: {
+        fk_user: userId.toString(),
+        fk_comment: commentId.toString(),
+        type: 'UPVOTE'
+      }
+    })
+  }
+
+  async downvoteComment(commentId: Id, userId: Id) {
+    await this.prismaORM.votes_comments.create({
+      data: {
+        fk_user: userId.toString(),
+        fk_comment: commentId.toString(),
+        type: 'DOWNVOTE'
+      }
+    })
+  }
 }

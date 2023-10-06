@@ -4,7 +4,7 @@ CREATE TABLE "new_memes" (
     "id" TEXT NOT NULL,
     "fk_author" TEXT NOT NULL,
     "content_uri" TEXT NOT NULL,
-    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "memes_fk_author_fkey" FOREIGN KEY ("fk_author") REFERENCES "users" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 INSERT INTO "new_memes" ("content_uri", "fk_author", "id") SELECT "content_uri", "fk_author", "id" FROM "memes";

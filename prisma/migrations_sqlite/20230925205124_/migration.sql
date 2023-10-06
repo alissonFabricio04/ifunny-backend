@@ -5,8 +5,8 @@ CREATE TABLE "users" (
     "email" TEXT NOT NULL,
     "is_active" BOOLEAN NOT NULL DEFAULT false,
     "password" TEXT NOT NULL,
-    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" DATETIME NOT NULL
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL
 );
 
 -- CreateTable
