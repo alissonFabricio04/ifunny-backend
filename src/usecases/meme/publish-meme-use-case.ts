@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { Id } from '../../entities/id/model/id-value-object'
-import { MemeGateway } from '../../entities/meme/gateways/meme-gateway'
-import { Meme } from '../../entities/meme/model/meme'
+import { Id } from '../../domain/value-objects/id/model/id-value-object'
+import { MemeGateway } from '../../domain/entities/meme/gateways/meme-gateway'
+import { Meme } from '../../domain/entities/meme/model/meme'
 import { InDTO, OutDTO, UseCase } from '../user-case'
+import { Midia } from '../../domain/value-objects/midia/model/midia-value-object'
 
 interface InputDTO {
   authorId: string
@@ -29,7 +30,7 @@ export class PublishMemeUseCase
     const meme = new Meme(
       new Id(),
       new Id(inputDTO.data.authorId),
-      { uri: inputDTO.data.content },
+      new Midia(inputDTO.data.content),
       tags,
     )
     

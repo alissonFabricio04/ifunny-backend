@@ -2,7 +2,7 @@
 
 import { sign } from 'jsonwebtoken'
 
-import { UserGateway } from '../../entities/user/gateways/user-gateway'
+import { UserGateway } from '../../domain/entities/user/gateways/user-gateway'
 import { InDTO, OutDTO, UseCase } from '../user-case'
 import { NotificationAdapter } from '../../adapters/notification-adapter'
 import { UserNotFoundError } from './errors/user-not-found-error'

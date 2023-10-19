@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { Id } from '../../entities/id/model/id-value-object'
-import { MemeGateway } from '../../entities/meme/gateways/meme-gateway'
+import { Id } from '../../domain/value-objects/id/model/id-value-object'
+import { MemeGateway } from '../../domain/entities/meme/gateways/meme-gateway'
 import { InDTO, OutDTO, UseCase } from '../user-case'
 
 interface InputDTO {

@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 import { sign } from 'jsonwebtoken'
 
-import { Email } from '../../entities/email/model/email-value-object'
-import { Id } from '../../entities/id/model/id-value-object'
-import { UserGateway } from '../../entities/user/gateways/user-gateway'
-import { User } from '../../entities/user/model/user'
+import { Email } from '../../domain/value-objects/email/model/email-value-object'
+import { Id } from '../../domain/value-objects/id/model/id-value-object'
+import { UserGateway } from '../../domain/entities/user/gateways/user-gateway'
+import { User } from '../../domain/entities/user/model/user'
 import { InDTO, OutDTO, UseCase } from '../user-case'
 import { PasswordsAreDifferentError } from './errors/passwords-are-different-error'
 import { NotificationAdapter } from '../../adapters/notification-adapter'

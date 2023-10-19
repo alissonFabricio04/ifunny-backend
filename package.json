@@ -20,6 +20,7 @@
   "dependencies": {
     "@prisma/client": "^5.4.1",
     "@types/jsonwebtoken": "^9.0.3",
+    "hyperimport": "^0.1.0",
     "jsonwebtoken": "^8.5.1",
     "prisma": "^5.3.1"
   }
