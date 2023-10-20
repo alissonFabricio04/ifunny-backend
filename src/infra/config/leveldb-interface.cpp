@@ -2,7 +2,7 @@
 #include <leveldb/db.h>
 #include "leveldb-interface.h"
 
-LevelDBInterface::LevelDBInterface(std::string dbPath = "./ffi/leveldb/dat") {
+LevelDBInterface::LevelDBInterface(std::string dbPath = "./ffi/leveldb/data") {
   options.create_if_missing = true;
   leveldb::Status status = leveldb::DB::Open(options, dbPath, &db);
   if (!status.ok()) {
