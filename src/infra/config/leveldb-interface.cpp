@@ -11,21 +11,27 @@ LevelDBInterface::LevelDBInterface(std::string dbPath = "./ffi/leveldb/data") {
   }
 }
 
+LevelDBInterface::~LevelDBInterface() {
+  delete db;
+}
+
 void LevelDBInterface::put(std::string key, std::string value) {
   leveldb::WriteOptions write_options;
   this->db->Put(write_options, key, value);
-  // delete this->db;
 }
 
-std::string LevelDBInterface::get(std::string key) {
+std::string* LevelDBInterface::get(std::string key) {
   leveldb::ReadOptions read_options;
   
-  std::string value;
-  leveldb::Status status = db->Get(read_options, key, &value);
-  if (status.ok()) {
-    return value;
-  }
+  std::string* value;
+  try {
+    leveldb::Status status = db->Get(read_options, key, value);
+    if (status.ok()) {
+      return value;
+    }
 
-  // delete this->db;
-  return nullptr;
+    return nullptr;
+  } catch (const leveldb::Status& e) {
+    return nullptr;
+  }
 }

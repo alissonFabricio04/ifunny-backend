@@ -7,6 +7,7 @@ class LevelDBInterface {
 
   public:
     LevelDBInterface(std::string dbPath);
+    ~LevelDBInterface();
     void put(std::string key, std::string value);
-    std::string get(std::string key);
+    std::string* get(std::string key);
 };

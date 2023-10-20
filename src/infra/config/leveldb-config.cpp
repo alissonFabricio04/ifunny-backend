@@ -36,7 +36,8 @@ int main() {
 
   LevelDBInterface db("./ffi/leveldb/data");
   db.put("c++ key", "c++ value");
-  std::cout << db.get("c++ key") << std::endl;
+  // std::cout << db.get("c++ key") << std::endl;
+  std::cout << db.get("c++ ke") << std::endl;
 
   return 0;
 }
