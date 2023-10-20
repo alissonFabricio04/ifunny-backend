@@ -1,5 +1,8 @@
 # Based on https://raw.githubusercontent.com/github/gitignore/main/Node.gitignore
 
+# Data
+ffi/leveldb/data
+
 # Logs
 
 logs
