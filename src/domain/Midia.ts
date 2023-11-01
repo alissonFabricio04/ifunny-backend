@@ -19,7 +19,11 @@ export default class Midia {
     throw new Error('Extensão de arquivo não suportada')
   }
 
-  getContent() {
+  getContent(): string {
+    if (this.value instanceof Image || this.value instanceof Video) {
+      return this.value.getValue()
+    }
+
     return this.value
   }
 }

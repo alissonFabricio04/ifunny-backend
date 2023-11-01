@@ -13,7 +13,7 @@ export default class User {
   ) {}
 
   activeAccount() {
-    if (!this.getIsActive()) throw new Error('Conta já está inativa')
+    if (this.getIsActive()) throw new Error('Conta já está ativa')
     this.isActive = true
   }
 

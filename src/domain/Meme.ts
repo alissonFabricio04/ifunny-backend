@@ -17,8 +17,17 @@ export default class Meme {
     this.status = StatusFactory.create(this, status)
   }
 
-  static create(authorId: Id, content: Midia, tags: Array<Tag>) {
-    return new Meme(Id.create(), authorId, content, tags, 0, 'visible')
+  static create(authorId: string, content: string, tags: { name: string }[]) {
+    if (tags.length > 20) throw new Error('Limite de tags atingido')
+
+    return new Meme(
+      Id.create(),
+      new Id(authorId),
+      new Midia(content),
+      tags.map((tag) => new Tag(tag.name)),
+      0,
+      'visible',
+    )
   }
 
   static restore(
@@ -39,8 +48,9 @@ export default class Meme {
     )
   }
 
-  addTag(tag: Tag) {
-    if (this.getTags().length > 20) throw new Error('Limite de tags atingido')
+  addTag(tagName: string) {
+    if (this.tags.length >= 20) throw new Error('Limite de tags atingido')
+    const tag = new Tag(tagName)
     const newTags = [...this.tags, tag]
     this.tags = newTags
   }
@@ -56,7 +66,7 @@ export default class Meme {
   upvote() {
     const newQtyUpvotes = this.upvotes + 1
     if (
-      newQtyUpvotes < 0 ||
+      // newQtyUpvotes < 0 ||
       isNaN(newQtyUpvotes) ||
       !isFinite(newQtyUpvotes) ||
       !Number.isSafeInteger(newQtyUpvotes)
@@ -69,7 +79,7 @@ export default class Meme {
   downvote() {
     const newQtyUpvotes = this.upvotes - 1
     if (
-      newQtyUpvotes < 0 ||
+      // newQtyUpvotes < 0 ||
       isNaN(newQtyUpvotes) ||
       !isFinite(newQtyUpvotes) ||
       !Number.isSafeInteger(newQtyUpvotes)

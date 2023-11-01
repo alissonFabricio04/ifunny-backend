@@ -1,4 +1,4 @@
-import { Midia } from '../../../src/domain/value-objects/midia'
+import Midia from '../../src/domain/Midia'
 
 test('it should not be able create new midia instance if params lenght are than less 22', () => {
   expect(() => new Midia('a')).toThrow('Extensão de arquivo não suportada')

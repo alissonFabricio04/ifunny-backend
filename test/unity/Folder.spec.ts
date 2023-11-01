@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Id } from '../../../src/domain/value-objects/id'
-import { Folder } from '../../../src/domain/entities/folder'
-import { Image } from '../../../src/domain/value-objects/image'
+import Id from '../../src/domain/Id'
+import Folder from '../../src/domain/Folder'
+import Image from '../../src/domain/Image'
 
 let folder: {
   id: string

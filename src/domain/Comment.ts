@@ -15,7 +15,7 @@ export default class Comment {
   upvote() {
     const newQtyUpvotes = this.upvotes + 1
     if (
-      newQtyUpvotes < 0 ||
+      // newQtyUpvotes < 0 ||
       isNaN(newQtyUpvotes) ||
       !isFinite(newQtyUpvotes) ||
       !Number.isSafeInteger(newQtyUpvotes)
@@ -28,7 +28,7 @@ export default class Comment {
   downvote() {
     const newQtyUpvotes = this.upvotes - 1
     if (
-      newQtyUpvotes < 0 ||
+      // newQtyUpvotes < 0 ||
       isNaN(newQtyUpvotes) ||
       !isFinite(newQtyUpvotes) ||
       !Number.isSafeInteger(newQtyUpvotes)
