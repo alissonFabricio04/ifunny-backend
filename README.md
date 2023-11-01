@@ -1,28 +1,16 @@
-# ifunny
+# FAZER
+  - <del> deixar todos os sets privados, caso faça sentido alguma coisa mudar, criar um metodo especifico para isso. <del>
+  - <del> criar um value-objects para CPF (pq todos os três grupos de usuarios deveram ter esse dado). <del>
 
-<h3 style="font-size: 1.5rem">Fazer</h3>
-<ul>
-  <li style="font-size: 1.1rem"><del>Criar a funcionalidade de ver comentarios de memes, com paginação<del></li>
-  <li style="font-size: 1.1rem"><del>Criar a funcionalidade de criar pastas<del></li>
-  <li style="font-size: 1.1rem"><del>Criar a funcionalidade de republicar memes e poder organizar esses repubs da forma que quiser <strong>(Caso o usuario não tenha nenhuma pasta, ele deve chamar o caso de uso de criar pasta, e informar o nome da pasta padrao, quee irá ser "Repubs)</strong><del></li>
-  <li style="font-size: 1.1rem">Criar a funcionalidade de chat entre 2 usuarios</li>
-  <li style="font-size: 1.1rem">Criar a funcionalidade de criar grupos onde se pode, enviar mensagens, videos e fotos (somente se o conteudo ja estiver na plataforma como meme) e video chamadas</li>
-  <li style="font-size: 1.1rem">Criar a funcionalidade de usuarios seguirem outros usuarios</li>
-  <li style="font-size: 1.1rem">Criar a funcionalidade de usuarios poderem ver os posts mais relevantes dos usuarios que eles seguem</li>
-</ul>
+# OBJETIVOS - FEATURES
+  - ## USUARIOS (CLIENTE FINAL)
+    - <del> os usuarios podem se cadastrar. <del>
+    - os usuarios podem ver locais de carregamento em um raio de 10km de com base em sua localização atual.
+    - os usuarios podem pesquisar locais e deve ser retornado postos de carregamento em um raio de 10km daquele local pesquisado.
 
-Para instalar dependencias:
+  - ## PARCEIROS (DONOS DE LOCAIS, COMO POSTOS DE GASOLINA OU DE TERRENOS)
+    - os parceiros podem se cadastrar.
+    - os parceiros podem gerar um pedido de instalação (um tecnico ira ate o local para avaliar a possibilidade de criar um novo posto de carregamento).
 
-```bash
-bun install
-```
-
-Para rodar:
-
-```bash
-bun run index.ts
-```
-
-<hr style="margin-top: 3rem; margin-bottom: 2rem">
-
-This project was created using `bun init` in bun v1.0.2. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+    - ### OBS
+      - caso o pedido de instalação seja aprovado, a parte de instalação do postos sera feita por terceiros, mas dps q posto for construido, a sua localização geografica deve ser inserida no sistema por qm aprovou a sua construção.

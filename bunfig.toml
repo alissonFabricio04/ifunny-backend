@@ -1,3 +1,0 @@
-preload = ["./node_modules/hyperimport/preload.ts"]
-[hyperimport]
-loaders = ["cpp"]

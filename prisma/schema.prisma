@@ -7,116 +7,140 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-generator erd {
-  provider = "prisma-erd-generator"
-  output   = "../ERD.svg"
-}
-
-model users {
-  id        String  @unique @default(uuid())
-  username  String  @unique
-  email     String  @unique
-  is_active Boolean @default(false)
+model Client {
+  id        String   @id @default(uuid())
+  firstName String   @db.VarChar(100)
+  surname   String   @db.VarChar(100)
+  cpf       String   @unique
+  telephone String   @unique
+  email     String   @unique @db.VarChar(255)
   password  String
+  isActive  Boolean  @default(false)
+  createdAt DateTime @default(now())
 
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt()
+  // fk_wallet String @unique
+  // Wallet    Wallet @relation(fields: [fk_wallet], references: [id])
 
-  memes          memes[]
-  comments       comments[]
-  likes          likes[]
-  folders        folders[]
-  votes_comments votes_comments[]
+  // Admins         Admins?
+  // ChargingOrders Order[]
+  // Transactions   Transactions[]
+  // Wallet         Wallet[]
+  Admins Admins?
 }
 
-model memes {
-  id String @unique @default(uuid())
+model Admins {
+  id       String  @id @default(uuid())
+  isActive Boolean @default(false)
 
-  fk_author String
-  author    users  @relation(fields: [fk_author], references: [id])
-
-  content_uri String @unique
-
-  created_at DateTime @default(now())
-
-  tags     tags[]
-  comments comments[]
-  likes    likes[]
-
-  repubs repubs[]
+  fk_client      String           @unique
+  Client         Client           @relation(fields: [fk_client], references: [id])
+  ChargingPoints ChargingPoints[]
 }
 
-model tags {
-  id String @unique @default(uuid())
-
-  fk_meme String
-  meme    memes  @relation(fields: [fk_meme], references: [id])
-
-  name String
+enum ChargingPointsStatus {
+  FREE
+  BUSY
+  UNDER_CONSTRUCTION
 }
 
-model comments {
-  id   String  @unique @default(uuid())
-  text String?
+model ChargingPoints {
+  id         String               @id @default(uuid())
+  status     ChargingPointsStatus
+  latitude   Float                @unique
+  longitude  Float                @unique
+  address    String
+  complement String?
+  country    String
+  city       String
+  state      String
+  zip        String
+  createdAt  DateTime             @default(now())
 
-  fk_repub String? @unique
-  repub    repubs? @relation(fields: [fk_repub], references: [id])
+  fk_admin String
+  admin    Admins @relation(fields: [fk_admin], references: [id])
 
-  fk_author String
-  author    users  @relation(fields: [fk_author], references: [id])
-
-  fk_meme String
-  meme    memes  @relation(fields: [fk_meme], references: [id])
-
-  like_comments votes_comments[]
+  // Orders Order[]
 }
 
-enum votes_comments_types {
-  UPVOTE
-  DOWNVOTE
-}
+// model Wallet {
+//   id     String  @id @default(uuid())
+//   amount Decimal
 
-model votes_comments {
-  id String @unique @default(uuid())
+//   Client       Client?        @relation(fields: [clientId], references: [id])
+//   Transactions Transactions[]
+//   clientId     String?
+// }
 
-  fk_comment String
-  comments   comments @relation(fields: [fk_comment], references: [id])
+// model Transactions {
+//   id          String   @id @default(uuid())
+//   amount      Decimal
+//   description String
+//   createdAt   DateTime @default(now())
 
-  fk_user String
-  user    users  @relation(fields: [fk_user], references: [id])
+//   fk_wallet String
+//   Wallet    Wallet @relation(fields: [fk_wallet], references: [id])
 
-  type votes_comments_types
-}
+//   fk_client String
+//   Client    Client @relation(fields: [fk_client], references: [id])
+// }
 
-model likes {
-  id String @unique @default(uuid())
+// model Order {
+//   id                 String   @id @default(uuid())
+//   amount             Decimal
+//   reserve            Decimal
+//   reserve_expiration DateTime
 
-  fk_user String
-  user    users  @relation(fields: [fk_user], references: [id])
+//   fk_client String
+//   Client    Client @relation(fields: [fk_client], references: [id])
 
-  fk_meme String
-  meme    memes  @relation(fields: [fk_meme], references: [id])
-}
+//   fk_payment    String
+//   paymentMethod Payments @relation(fields: [fk_payment], references: [id])
 
-model folders {
-  id String @unique @default(uuid())
+//   fk_order_status String
+//   orderStatus     OrderStatus @relation(fields: [fk_order_status], references: [id])
 
-  fk_owner String
-  owner    users  @relation(fields: [fk_owner], references: [id])
+//   fk_charging_point String?
+//   ChargingPoints    ChargingPoints? @relation(fields: [fk_charging_point], references: [id])
 
-  folderName String
+//   updated_at DateTime @updatedAt()
+//   createdAt  DateTime @default(now())
+// }
 
-  repubs repubs[]
-}
+// model OrderStatus {
+//   id     String @id @default(uuid())
+//   status String @unique // WAITING_PAYMENT, PENDING, COMPLETED, CANCELLED
 
-model repubs {
-  id String @unique @default(uuid())
+//   ChargingOrders Order[]
+// }
 
-  fk_folder String
-  folder    folders @relation(fields: [fk_folder], references: [id])
+// model Payments {
+//   id       String  @id @default(uuid())
+//   subtotal Decimal
 
-  fk_meme String
-  meme    memes  @relation(fields: [fk_meme], references: [id])
+//   payment_type String
+//   PaymentType  PaymentType @relation(fields: [payment_type], references: [id])
 
-  comments comments?
-}
+//   payment_status String
+//   PaymentStatus  PaymentStatus @relation(fields: [payment_status], references: [id])
+
+//   checkout_url     String?   @unique
+//   confimation_date DateTime?
+//   payload          Json?
+
+//   updated_at DateTime @updatedAt()
+//   created_at DateTime @default(now())
+
+//   ChargingOrders Order[]
+// }
+
+// model PaymentType {
+//   id       String     @id @default(uuid())
+//   name     String     @unique // FUNDS, PIX, CREDIT_CARD
+//   Payement Payments[]
+// }
+
+// model PaymentStatus {
+//   id       String     @id @default(uuid())
+//   name     String     @unique // WAITING_PAYMENT, PAID, CANCELLED
+//   Payement Payments[]
+// }
