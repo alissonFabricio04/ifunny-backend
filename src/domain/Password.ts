@@ -2,33 +2,39 @@
 
 import crypto from 'node:crypto'
 
-export default abstract class Password {
+function isSafe(password: string): boolean {
+  if (!password) throw new Error('Senha inválida')
+  if (password.length < 8) throw new Error('Senha muito curta')
+  if (password.length > 100) throw new Error('Senha muito longa')
+
+  const regexUpperCase = /[A-Z]/
+  if (!regexUpperCase.test(password)) {
+    throw new Error('A senha deve possuir pelo menos uma letra maiúscula')
+  }
+
+  const regexLowerCase = /[a-z]/
+  if (!regexLowerCase.test(password)) {
+    throw new Error('A senha deve possuir pelo menos uma letra minúscula')
+  }
+
+  const regexNumber = /[0-9]/
+  if (!regexNumber.test(password)) {
+    throw new Error('A senha deve possuir pelo menos um número')
+  }
+
+  const regexSpecial = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/
+  if (!regexSpecial.test(password)) {
+    throw new Error('A senha deve possuir pelo menos um caractere especial')
+  }
+
+  return true
+}
+
+export default interface Password {
   value: string
   salt: string
   algorithm: string
-  abstract validate(password: string): boolean
-
-  static isSafe(password: string): boolean {
-    const regexUpperCase = /[A-Z]/
-    const regexLowerCase = /[a-z]/
-    const regexNumber = /[0-9]/
-    const regexSpecial = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/
-    if (password.length < 8) throw new Error('Senha muito curta')
-    if (password.length > 100) throw new Error('Senha muito longa')
-    if (!regexUpperCase.test(password)) {
-      throw new Error('A senha deve possuir pelo menos uma letra maiúscula')
-    }
-    if (!regexLowerCase.test(password)) {
-      throw new Error('A senha deve possuir pelo menos uma letra minúscula')
-    }
-    if (!regexNumber.test(password)) {
-      throw new Error('A senha deve possuir pelo menos um número')
-    }
-    if (!regexSpecial.test(password)) {
-      throw new Error('A senha deve possuir pelo menos um caractere especial')
-    }
-    return true
-  }
+  validate(password: string): boolean
 }
 
 export class PlainPassword implements Password {
@@ -42,7 +48,7 @@ export class PlainPassword implements Password {
   }
 
   static create(password: string) {
-    Password.isSafe(password)
+    isSafe(password)
     return new PlainPassword(password, '')
   }
 
@@ -66,7 +72,7 @@ export class SHA1Password implements Password {
   }
 
   static create(password: string) {
-    Password.isSafe(password)
+    isSafe(password)
     const value = crypto.createHash('sha1').update(password).digest('hex')
     return new SHA1Password(value, '')
   }
@@ -92,7 +98,7 @@ export class PBKDF2Password implements Password {
   }
 
   static create(password: string) {
-    Password.isSafe(password)
+    isSafe(password)
     const salt = crypto.randomBytes(20).toString('hex')
     const value = crypto
       .pbkdf2Sync(password, salt, 100, 64, 'sha512')
@@ -117,6 +123,6 @@ export class PasswordFactory {
     if (algorithm === 'plain') return PlainPassword
     if (algorithm === 'sha1') return SHA1Password
     if (algorithm === 'pbkdf2') return PBKDF2Password
-    throw new Error()
+    throw new Error('Criptografia não conhecida')
   }
 }

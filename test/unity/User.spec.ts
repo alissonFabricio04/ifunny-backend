@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import Image from '../../src/domain/Image'
 import User from '../../src/domain/User'
 
 let user: {
@@ -135,4 +136,46 @@ test('it should be able get username', () => {
   const u = User.create(user.username, user.password)
 
   expect(u.getUsername()).toStrictEqual(user.username)
+})
+
+test('it should be able get profile picture', () => {
+  const u = User.create(user.username, user.password)
+
+  expect(u.getProfilePicture().getValue()).toStrictEqual(
+    Image.createDefault().getValue(),
+  )
+})
+
+test('it should be able restore user state', () => {
+  const profilePicture = Image.createDefault().getValue()
+  const userCreate = User.create(user.username, user.password, profilePicture)
+
+  expect(
+    User.restore(
+      userCreate.userId.getValue(),
+      userCreate.getUsername(),
+      userCreate.getPassword().value,
+      userCreate.getPassword().algorithm,
+      userCreate.getPassword().salt,
+      true,
+      profilePicture,
+    ),
+  ).toBeInstanceOf(User)
+})
+
+test('it should be able restore user state', () => {
+  const profilePicture = Image.createDefault().getValue()
+  const userCreate = User.create(user.username, user.password, profilePicture)
+
+  expect(
+    User.restore(
+      userCreate.userId.getValue(),
+      userCreate.getUsername(),
+      userCreate.getPassword().value,
+      userCreate.getPassword().algorithm,
+      userCreate.getPassword().salt,
+      false,
+      profilePicture,
+    ),
+  ).toBeInstanceOf(User)
 })

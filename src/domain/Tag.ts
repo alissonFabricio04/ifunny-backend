@@ -3,9 +3,8 @@ export default class Tag {
   private weight: number
 
   constructor(name: string, weight = 0) {
-    if (!name) throw new Error('Tag com formato inválido')
-    if (name.length <= 0) throw new Error('Tag não foi fornecido')
-    if (name.length > 100) throw new Error('Tag com formato inválido')
+    if (!name || name.length <= 0) throw new Error('Tag com formato inválido')
+    if (name.length > 100) throw new Error('Nome de tag muito longo')
     if (
       weight < 0 ||
       isNaN(weight) ||

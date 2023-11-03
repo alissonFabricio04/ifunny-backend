@@ -7,8 +7,8 @@ export default class Content {
     readonly body: string = '',
     midiaId?: string,
   ) {
+    if (!body && !midiaId) throw new Error('Conteúdo com formato invalido')
     if (midiaId) this.midiaId = new Id(midiaId)
-    if (!body && midiaId) throw new Error('Conteúdo com formato invalido')
   }
 
   getMidiaId() {

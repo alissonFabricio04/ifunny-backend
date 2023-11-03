@@ -55,22 +55,16 @@ export default class Meme {
     this.tags = newTags
   }
 
-  removeTag(tag: Tag) {
-    const newTags = this.getTags().filter(
-      (current) =>
-        current.getName().toUpperCase() !== tag.getName().toUpperCase(),
+  removeTag(tagName: string) {
+    const newTags = this.tags.filter(
+      (current) => current.getName().toUpperCase() !== tagName.toUpperCase(),
     )
     this.tags = newTags
   }
 
   upvote() {
     const newQtyUpvotes = this.upvotes + 1
-    if (
-      // newQtyUpvotes < 0 ||
-      isNaN(newQtyUpvotes) ||
-      !isFinite(newQtyUpvotes) ||
-      !Number.isSafeInteger(newQtyUpvotes)
-    ) {
+    if (!this.qtyOfVotesIsValid(newQtyUpvotes)) {
       throw new Error('Quantidade de upvotes invalida')
     }
     this.upvotes = newQtyUpvotes
@@ -78,15 +72,17 @@ export default class Meme {
 
   downvote() {
     const newQtyUpvotes = this.upvotes - 1
-    if (
-      // newQtyUpvotes < 0 ||
-      isNaN(newQtyUpvotes) ||
-      !isFinite(newQtyUpvotes) ||
-      !Number.isSafeInteger(newQtyUpvotes)
-    ) {
+    if (!this.qtyOfVotesIsValid(newQtyUpvotes)) {
       throw new Error('Quantidade de downvotes invalida')
     }
     this.upvotes = newQtyUpvotes
+  }
+
+  private qtyOfVotesIsValid(votes: number): boolean {
+    if (isNaN(votes) || !isFinite(votes) || !Number.isSafeInteger(votes)) {
+      return false
+    }
+    return true
   }
 
   getTags() {

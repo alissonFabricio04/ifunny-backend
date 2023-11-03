@@ -14,12 +14,7 @@ export default class Comment {
 
   upvote() {
     const newQtyUpvotes = this.upvotes + 1
-    if (
-      // newQtyUpvotes < 0 ||
-      isNaN(newQtyUpvotes) ||
-      !isFinite(newQtyUpvotes) ||
-      !Number.isSafeInteger(newQtyUpvotes)
-    ) {
+    if (!this.qtyOfVotesIsValid(newQtyUpvotes)) {
       throw new Error('Quantidade de upvotes invalida')
     }
     this.upvotes = newQtyUpvotes
@@ -27,15 +22,17 @@ export default class Comment {
 
   downvote() {
     const newQtyUpvotes = this.upvotes - 1
-    if (
-      // newQtyUpvotes < 0 ||
-      isNaN(newQtyUpvotes) ||
-      !isFinite(newQtyUpvotes) ||
-      !Number.isSafeInteger(newQtyUpvotes)
-    ) {
+    if (!this.qtyOfVotesIsValid(newQtyUpvotes)) {
       throw new Error('Quantidade de downvotes invalida')
     }
     this.upvotes = newQtyUpvotes
+  }
+
+  private qtyOfVotesIsValid(votes: number): boolean {
+    if (isNaN(votes) || !isFinite(votes) || !Number.isSafeInteger(votes)) {
+      return false
+    }
+    return true
   }
 
   static create(memeId: string, authorId: string, content: Content) {

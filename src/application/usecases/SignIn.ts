@@ -13,7 +13,7 @@ type Output = {
   token: string
 }
 
-export class SignIn {
+export default class SignIn {
   constructor(
     readonly userRepository: UserRepository,
     readonly tokenAdapter: TokenAdapter,
@@ -25,7 +25,7 @@ export class SignIn {
     )
     if (!userExists) throw new Error('Username ou senha inválidos')
     const passwordsIsEqual = userExists.getPassword().validate(input.password)
-    if (!passwordsIsEqual) throw new Error('Senhas ou username incorreto')
+    if (!passwordsIsEqual) throw new Error('Senha ou username incorreto')
     const userId = userExists.userId
     const token = this.tokenAdapter.sign(userId.getValue())
     return {

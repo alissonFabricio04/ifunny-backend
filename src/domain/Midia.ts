@@ -13,8 +13,9 @@ export default class Midia {
       this.value = new Video(value)
       return
     }
-    if (value.includes(':text/ascii')) {
-      this.value = Buffer.from(value, 'base64').toString('utf8')
+    if (value.includes(':text/utf8')) {
+      this.value = value
+      return
     }
     throw new Error('Extensão de arquivo não suportada')
   }
@@ -24,6 +25,7 @@ export default class Midia {
       return this.value.getValue()
     }
 
-    return this.value
+    const value = this.value.replace('data:text/utf8;base64,', '')
+    return Buffer.from(value, 'base64').toString('utf8')
   }
 }

@@ -12,10 +12,14 @@ type Input = {
   passwordAgain: string
 }
 
-export class SignUp {
+type Output = {
+  userId: string
+}
+
+export default class SignUp {
   constructor(readonly userRepository: UserRepository) {}
 
-  async handle(input: Input): Promise<void> {
+  async handle(input: Input): Promise<Output> {
     if (!isDeepStrictEqual(input.password, input.passwordAgain)) {
       throw new Error('Senhas são diferentes')
     }
@@ -25,5 +29,8 @@ export class SignUp {
     )
     if (usernameAlreadyInUse) throw new Error('Username já em uso')
     await this.userRepository.save(user)
+    return {
+      userId: user.userId.getValue(),
+    }
   }
 }
