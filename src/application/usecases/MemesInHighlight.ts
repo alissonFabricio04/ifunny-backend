@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-constructor */
 
-import { MemeQuery } from '../queries/MemeQuery'
+import MemeQuery from '../queries/MemeQuery'
 
 type Input = {
   page?: number

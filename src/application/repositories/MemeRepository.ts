@@ -6,6 +6,6 @@ export default interface MemeRepository {
   get: (memeId: Id) => Promise<Meme | null>
   update: (meme: Meme) => Promise<void>
   updateVotes: (userId: Id, meme: Meme) => Promise<void>
-  alreadyLikeMeme: (userId: Id, memeId: Id) => Promise<boolean>
-  alreadyDislikeMeme: (userId: Id, memeId: Id) => Promise<boolean>
+  alreadyLikeThisMeme: (userId: Id, memeId: Id) => Promise<boolean>
+  alreadyDislikeThisMeme: (userId: Id, memeId: Id) => Promise<boolean>
 }

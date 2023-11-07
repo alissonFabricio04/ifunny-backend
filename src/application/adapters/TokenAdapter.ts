@@ -1,3 +1,3 @@
 export interface TokenAdapter {
-  sign: (plaintext: string) => string
+  sign: (data: object) => string
 }

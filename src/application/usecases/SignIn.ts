@@ -27,7 +27,7 @@ export default class SignIn {
     const passwordsIsEqual = userExists.getPassword().validate(input.password)
     if (!passwordsIsEqual) throw new Error('Senha ou username incorreto')
     const userId = userExists.userId
-    const token = this.tokenAdapter.sign(userId.getValue())
+    const token = this.tokenAdapter.sign({ userId: userId.getValue() })
     return {
       token,
     }

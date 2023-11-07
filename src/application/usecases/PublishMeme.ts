@@ -1,9 +1,6 @@
 /* eslint-disable no-useless-constructor */
 
-import Id from '../../domain/Id'
 import Meme from '../../domain/Meme'
-import Midia from '../../domain/Midia'
-import Tag from '../../domain/Tag'
 import MemeRepository from '../repositories/MemeRepository'
 
 type Input = {
@@ -14,16 +11,18 @@ type Input = {
   }[]
 }
 
-export class PublishMeme {
+type Output = {
+  memeId: string
+}
+
+export default class PublishMeme {
   constructor(readonly memeRepository: MemeRepository) {}
 
-  async handle(input: Input): Promise<void> {
-    const tags = input.tags.map((tag) => new Tag(tag.name))
-    const meme = Meme.create(
-      new Id(input.authorId),
-      new Midia(input.content),
-      tags,
-    )
+  async handle(input: Input): Promise<Output> {
+    const meme = Meme.create(input.authorId, input.content, input.tags)
     await this.memeRepository.save(meme)
+    return {
+      memeId: meme.memeId.getValue(),
+    }
   }
 }

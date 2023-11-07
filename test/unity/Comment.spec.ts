@@ -1,4 +1,5 @@
-import Id from '../../src/domain/Id'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import Content from '../../src/domain/Content'
 import Comment from '../../src/domain/Comment'
 

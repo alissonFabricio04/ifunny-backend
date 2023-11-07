@@ -17,7 +17,6 @@ export default class UserRepositoryInMemory
     const user = this.users.find(
       (user) => user.userId.getValue() === userId.getValue(),
     )
-
     return user || null
   }
 
@@ -25,7 +24,6 @@ export default class UserRepositoryInMemory
     const user = this.users.find(
       (user) => user.getUsername() === username.getValue(),
     )
-
     return user || null
   }
 
@@ -34,7 +32,6 @@ export default class UserRepositoryInMemory
       if (u.userId.getValue() === user.userId.getValue()) {
         return user
       }
-
       return u
     })
   }
@@ -43,11 +40,9 @@ export default class UserRepositoryInMemory
     const user = this.users.find(
       (user) => user.userId.getValue() === userId.getValue(),
     )
-
     if (!user) {
       return null
     }
-
     return {
       userId: user.userId.getValue(),
       username: user.getUsername(),

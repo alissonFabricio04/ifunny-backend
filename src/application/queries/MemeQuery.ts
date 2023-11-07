@@ -1,6 +1,6 @@
 import Id from '../../domain/Id'
 
-type Meme = {
+export type Meme = {
   memeId: string
   authorId: string
   content: string
@@ -8,7 +8,7 @@ type Meme = {
   upvotes: number
 }
 
-export interface MemeQuery {
+export default interface MemeQuery {
   recentMemesNotLiked: (userId: Id, qty?: number) => Promise<Meme[]>
   lastLikes: (userId: Id, qty?: number) => Promise<Meme[]>
   highlights: (page?: number) => Promise<Meme[]>

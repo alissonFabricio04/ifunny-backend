@@ -1,3 +1,5 @@
+import { remove } from 'diacritics'
+
 export default class Tag {
   private name: string
   private weight: number
@@ -13,7 +15,7 @@ export default class Tag {
     ) {
       throw new Error('Peso da tag invalido')
     }
-    name = name.toLowerCase()
+    name = remove(name).toLowerCase()
     this.name = name
     this.weight = weight
   }

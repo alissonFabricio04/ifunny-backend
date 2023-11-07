@@ -8,7 +8,7 @@ type Input = {
   memeId: string
 }
 
-export class LikeMeme {
+export default class LikeMeme {
   constructor(readonly memeRepository: MemeRepository) {}
 
   async handle(input: Input): Promise<void> {
@@ -16,11 +16,11 @@ export class LikeMeme {
     const isPossibleLikeThisMeme = await this.memeRepository.get(memeId)
     if (!isPossibleLikeThisMeme) throw new Error('Conteúdo não encontrado')
     const userId = new Id(input.userId)
-    const alreadyLikedMeme = await this.memeRepository.alreadyLikeMeme(
-      memeId,
+    const alreadyLikeThisMeme = await this.memeRepository.alreadyLikeThisMeme(
       userId,
+      memeId,
     )
-    if (alreadyLikedMeme) throw new Error('Você já deu like neste meme')
+    if (alreadyLikeThisMeme) throw new Error('Você já deu like neste meme')
     isPossibleLikeThisMeme.upvote()
     await this.memeRepository.updateVotes(userId, isPossibleLikeThisMeme)
   }

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import Meme from '../../src/domain/Meme'
 import {
   InvisibleStatus,
