@@ -1,20 +1,22 @@
 import LikeMeme from '../../../src/application/usecases/LikeMeme'
 import MemeRepositoryInMemory from '../../../src/infra/repositories/MemeRepositoryInMemory'
-import { getRandomNumber } from './GetRandomNumber'
 
-export async function generateRandomLikesOnMemes(
+export async function generateLikesOnMemes(
   memesId: string[],
   userId: string,
   memeRepositoryInMemory: MemeRepositoryInMemory,
   qty: number,
 ) {
   const likeMeme = new LikeMeme(memeRepositoryInMemory)
-  for (let index = 0; index < getRandomNumber(qty); index++) {
-    const memeId = memesId[getRandomNumber(memesId.length - 1)]
-    const inputLikeMeme = {
-      userId,
-      memeId,
+  for (let index = 0; index < qty; index++) {
+    if (index % 2 === 0) {
+      const memeId = memesId[index]
+      const inputLikeMeme = {
+        userId,
+        memeId,
+      }
+      await likeMeme.handle(inputLikeMeme)
     }
-    await likeMeme.handle(inputLikeMeme)
+    // console.log('generateLikesOnMemes', qty, memesId[index])
   }
 }

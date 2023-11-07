@@ -2,8 +2,8 @@ import MemeRecommendation from '../../src/application/usecases/MemeRecommendatio
 import SignUp from '../../src/application/usecases/SignUp'
 import MemeRepositoryInMemory from '../../src/infra/repositories/MemeRepositoryInMemory'
 import UserRepositoryInMemory from '../../src/infra/repositories/UserRepositoryInMemory'
-import { generateRandomLikesOnMemes } from './utils/GenerateRandomLikesOnMemes'
-import { generateRandomMemes } from './utils/GenerateRandomMemes'
+import { generateLikesOnMemes } from './utils/GenerateLikesOnMemes'
+import { generateMemes } from './utils/GenerateMemes'
 
 let signUp: SignUp
 let memeRecommendation: MemeRecommendation
@@ -26,54 +26,13 @@ test('it should be able receive recommendations of memes', async () => {
   }
   const outputSignUp = await signUp.handle(inputSignUp)
 
-  const tagsAvaliabes = [
-    { name: 'jujutsu kaisen' },
-    { name: 'programação' },
-    { name: 'bio shock' },
-    { name: 'resident evil' },
-    { name: 'one piece' },
-    { name: 'naruto' },
-    { name: 'dragon ball' },
-    { name: 'attack on titan' },
-    { name: 'my hero academia' },
-    { name: 'anime' },
-    { name: 'videogame' },
-    { name: 'playstation' },
-    { name: 'xbox' },
-    { name: 'nintendo' },
-    { name: 'pc gaming' },
-    { name: 'game development' },
-    { name: 'music' },
-    { name: 'rock' },
-    { name: 'pop' },
-    { name: 'hip-hop' },
-    { name: 'classical' },
-    { name: 'jazz' },
-    { name: 'programming' },
-    { name: 'coding' },
-    { name: 'web development' },
-    { name: 'machine learning' },
-    { name: 'artificial intelligence' },
-    { name: 'data science' },
-    { name: 'space' },
-    { name: 'nature' },
-    { name: 'history' },
-    { name: 'cooking' },
-  ]
   const memesId: string[] = []
-  await generateRandomMemes(
-    memesId,
-    tagsAvaliabes,
-    [3, 3, 3, 3, 3, 3],
-    outputSignUp.userId,
-    memeRepositoryInMemory,
-    100,
-  )
-  await generateRandomLikesOnMemes(
+  await generateMemes(memesId, outputSignUp.userId, memeRepositoryInMemory, 12)
+  await generateLikesOnMemes(
     memesId,
     outputSignUp.userId,
     memeRepositoryInMemory,
-    5,
+    8,
   )
 
   const inputMemeRecommendation = {
@@ -83,7 +42,31 @@ test('it should be able receive recommendations of memes', async () => {
     inputMemeRecommendation,
   )
 
-  expect(outputMemeRecommendation).toBeDefined()
   console.log(JSON.stringify(await memeRepositoryInMemory.lastLikes(), null, 4))
   console.log(JSON.stringify(outputMemeRecommendation.recommendations, null, 4))
+
+  expect(outputMemeRecommendation).toBeDefined()
+  expect(outputMemeRecommendation.recommendations).toHaveLength(7)
+  expect(outputMemeRecommendation.recommendations[0].similarity).toStrictEqual(
+    0.7071067811865475,
+  )
+  expect(outputMemeRecommendation.recommendations[0].tags).toStrictEqual([
+    { name: 'programacao' },
+    { name: 'python' },
+  ])
+  expect(outputMemeRecommendation.recommendations[1].similarity).toStrictEqual(
+    0.8164965809277259,
+  )
+  expect(outputMemeRecommendation.recommendations[1].tags).toStrictEqual([
+    { name: 'bio shock' },
+    { name: 'jogos' },
+    { name: 'pc' },
+  ])
+  expect(outputMemeRecommendation.recommendations[2].similarity).toStrictEqual(
+    0.7071067811865475,
+  )
+  expect(outputMemeRecommendation.recommendations[2].tags).toStrictEqual([
+    { name: 'naruto' },
+    { name: 'anime' },
+  ])
 })
