@@ -27,12 +27,38 @@ test('it should be able receive recommendations of memes', async () => {
   const outputSignUp = await signUp.handle(inputSignUp)
 
   const tagsAvaliabes = [
-    { name: 'one piece' },
-    { name: 'anime' },
     { name: 'jujutsu kaisen' },
     { name: 'programação' },
     { name: 'bio shock' },
     { name: 'resident evil' },
+    { name: 'one piece' },
+    { name: 'naruto' },
+    { name: 'dragon ball' },
+    { name: 'attack on titan' },
+    { name: 'my hero academia' },
+    { name: 'anime' },
+    { name: 'videogame' },
+    { name: 'playstation' },
+    { name: 'xbox' },
+    { name: 'nintendo' },
+    { name: 'pc gaming' },
+    { name: 'game development' },
+    { name: 'music' },
+    { name: 'rock' },
+    { name: 'pop' },
+    { name: 'hip-hop' },
+    { name: 'classical' },
+    { name: 'jazz' },
+    { name: 'programming' },
+    { name: 'coding' },
+    { name: 'web development' },
+    { name: 'machine learning' },
+    { name: 'artificial intelligence' },
+    { name: 'data science' },
+    { name: 'space' },
+    { name: 'nature' },
+    { name: 'history' },
+    { name: 'cooking' },
   ]
   const memesId: string[] = []
   await generateRandomMemes(
@@ -47,7 +73,7 @@ test('it should be able receive recommendations of memes', async () => {
     memesId,
     outputSignUp.userId,
     memeRepositoryInMemory,
-    10,
+    5,
   )
 
   const inputMemeRecommendation = {

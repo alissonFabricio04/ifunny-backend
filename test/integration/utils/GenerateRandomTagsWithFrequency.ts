@@ -1,9 +1,15 @@
+import { getRandomNumber } from './GetRandomNumber'
+
+type Tag = {
+  name: string
+}
+
 export function generateRandomTagsWithFrequency(
-  tags: { name: string }[],
+  tags: Tag[],
   frequencies: number[],
-  count = 3,
+  count = getRandomNumber(10),
 ) {
-  const result: { name: string }[] = []
+  const result: Tag[] = []
   const totalFrequency = frequencies.reduce(
     (acc, frequency) => acc + frequency,
     0,
@@ -12,7 +18,7 @@ export function generateRandomTagsWithFrequency(
   for (let i = 0; i < count; i++) {
     const randomValue = Math.random() * totalFrequency
     let cumulativeFrequency = 0
-    let selectedTag: any
+    let selectedTag: Tag | null = null
 
     for (let j = 0; j < tags.length; j++) {
       cumulativeFrequency += frequencies[j]
@@ -22,7 +28,9 @@ export function generateRandomTagsWithFrequency(
       }
     }
 
-    result.push(selectedTag)
+    if (selectedTag) {
+      result.push(selectedTag)
+    }
   }
 
   return result

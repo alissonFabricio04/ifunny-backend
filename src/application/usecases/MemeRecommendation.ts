@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-constructor */
 
-import Id from '../../domain/Id'
 import MemeQuery from '../queries/MemeQuery'
+import Id from '../../domain/Id'
 
 type Meme = {
   memeId: string
@@ -15,15 +15,17 @@ type Input = {
   userId: string
 }
 
+type Recommendation = {
+  similarity: number
+  memeId: string
+  authorId: string
+  content: string
+  tags: { name: string }[]
+  upvotes: number
+}
+
 type Output = {
-  recommendations: {
-    similarity: number
-    memeId: string
-    authorId: string
-    content: string
-    tags: { name: string }[]
-    upvotes: number
-  }[]
+  recommendations: Recommendation[]
 }
 
 export default class MemeRecommendation {
@@ -36,14 +38,17 @@ export default class MemeRecommendation {
       userId,
       200,
     )
+
     const userTagsPreferences = this.getTagsMemes(last200Likes)
-    const recommendations = []
+    const recommendations: Recommendation[] = []
+
     for (const memeNotLiked of recentMemesNotLiked) {
       const tagsFromMemesNotLiked = this.getTagsMemes([memeNotLiked])
-      const similarity = this.calculeteSimilarity(
+      const similarity = this.calculateSimilarity(
         tagsFromMemesNotLiked,
         userTagsPreferences,
       )
+
       if (similarity >= 0.5) {
         recommendations.push({
           similarity,
@@ -51,6 +56,7 @@ export default class MemeRecommendation {
         })
       }
     }
+
     return {
       recommendations,
     }
@@ -60,41 +66,33 @@ export default class MemeRecommendation {
     const tagMap: Map<string, number> = new Map()
     for (const meme of memes) {
       for (const tag of meme.tags) {
-        const currentTagWeight = tagMap.get(tag.name) ?? 1
-        tagMap.set(tag.name, currentTagWeight + 1)
+        tagMap.set(tag.name, (tagMap.get(tag.name) || 0) + 1)
       }
     }
     return tagMap
   }
 
-  private calculeteSimilarity(
+  private calculateSimilarity(
     tagsFromMemesNotLiked: Map<string, number>,
     userTagsPreferences: Map<string, number>,
-  ) {
-    const [dotProduct, normMemeTags, normUserPreferences] = this.calculateSigma(
-      tagsFromMemesNotLiked,
-      userTagsPreferences,
-    )
-    const sqrtNormMemeTags = Math.sqrt(normMemeTags)
-    const sqrtNormUserPref = Math.sqrt(normUserPreferences)
-    const similarity = dotProduct / (sqrtNormMemeTags * sqrtNormUserPref)
-    return similarity
-  }
-
-  private calculateSigma(
-    tags01: Map<string, number>,
-    tags02: Map<string, number>,
   ) {
     let dotProduct = 0
     let normTag01 = 0
     let normTag02 = 0
-    for (const [tagName, tf] of tags01.entries()) {
-      const tagWeight = tags02.get(tagName) ?? 1
+
+    for (const [tagName, tf] of tagsFromMemesNotLiked.entries()) {
+      const tagWeight = userTagsPreferences.get(tagName) || 0
       dotProduct += tf * tagWeight
       normTag01 += tf ** 2
       normTag02 += tagWeight ** 2
     }
 
-    return [dotProduct, normTag01, normTag02]
+    const sqrtNormTag01 = Math.sqrt(normTag01)
+    const sqrtNormTag02 = Math.sqrt(normTag02)
+    const normalizationFactor = sqrtNormTag01 * sqrtNormTag02
+    const similarity =
+      normalizationFactor === 0 ? 0 : dotProduct / normalizationFactor
+
+    return similarity
   }
 }
