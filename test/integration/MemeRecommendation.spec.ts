@@ -42,8 +42,8 @@ test('it should be able receive recommendations of memes', async () => {
     inputMemeRecommendation,
   )
 
-  console.log(JSON.stringify(await memeRepositoryInMemory.lastLikes(), null, 4))
-  console.log(JSON.stringify(outputMemeRecommendation.recommendations, null, 4))
+  // console.log(JSON.stringify(await memeRepositoryInMemory.lastLikes(), null, 4))
+  // console.log(JSON.stringify(outputMemeRecommendation.recommendations, null, 4))
 
   expect(outputMemeRecommendation).toBeDefined()
   expect(outputMemeRecommendation.recommendations).toHaveLength(7)

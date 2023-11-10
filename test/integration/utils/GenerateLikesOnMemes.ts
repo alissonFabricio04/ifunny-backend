@@ -17,6 +17,5 @@ export async function generateLikesOnMemes(
       }
       await likeMeme.handle(inputLikeMeme)
     }
-    // console.log('generateLikesOnMemes', qty, memesId[index])
   }
 }

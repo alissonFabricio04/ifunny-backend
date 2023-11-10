@@ -30,7 +30,6 @@ export async function generateMemes(
       tags: tagsAvaliabes[index],
     }
     const outputPublishMeme = await publishMeme.handle(inputPublishMeme)
-    // console.log('generateMemes', outputPublishMeme.memeId)
     memesId.push(outputPublishMeme.memeId)
   }
 }

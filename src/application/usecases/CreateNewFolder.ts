@@ -11,10 +11,14 @@ type Input = {
   thumbnail?: string
 }
 
-export class CreateNewFolder {
+type Output = {
+  folderId: string
+}
+
+export default class CreateNewFolder {
   constructor(readonly folderRepository: FolderRepository) {}
 
-  async handle(input: Input): Promise<void> {
+  async handle(input: Input): Promise<Output> {
     const ownerId = new Id(input.userId)
     const alreadyFolderWithThisName = await this.folderRepository.getByName(
       ownerId,
@@ -29,5 +33,8 @@ export class CreateNewFolder {
       input.thumbnail,
     )
     await this.folderRepository.save(folder)
+    return {
+      folderId: folder.folderId.getValue(),
+    }
   }
 }

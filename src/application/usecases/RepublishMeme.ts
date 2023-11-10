@@ -9,7 +9,7 @@ type Input = {
   memeId: string
 }
 
-export class RepublishMeme {
+export default class RepublishMeme {
   constructor(
     readonly folderRepository: FolderRepository,
     readonly memeRepository: MemeRepository,
@@ -18,7 +18,7 @@ export class RepublishMeme {
   async handle(input: Input): Promise<void> {
     const memeId = new Id(input.memeId)
     const isPossibleRepubThisMeme = await this.memeRepository.get(memeId)
-    if (!isPossibleRepubThisMeme) throw new Error('Conteudo não encontrado')
+    if (!isPossibleRepubThisMeme) throw new Error('Conteúdo não encontrado')
     const folderId = new Id(input.folderId)
     const folderExists = await this.folderRepository.get(folderId)
     if (!folderExists) {
